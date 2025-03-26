@@ -1,6 +1,6 @@
 <p align="center">
   <img src="https://redwestrp.eu/videoNew.png" />
-</p
+</p>
 ```markdown
 ## Welcome to **gum_docs**  
 
