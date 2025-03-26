@@ -1,4 +1,4 @@
-<img src="https://redwestrp.eu/video.png" />
+<img src="https://redwestrp.eu/videoNew.png" />
 
 ```markdown
 ## Welcome to **gum_docs**  
