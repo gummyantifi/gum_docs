@@ -1,7 +1,3 @@
-Here is the **README** file for **gumApi** in English:  
-
----
-
 # gumApi  
 
 gumApi is a bridge between scripts and your framework. Thanks to gumApi, you don't need to use different versions of scripts; instead, you only need gumApi. This ensures that scripts will run on a wide range of frameworks.  
