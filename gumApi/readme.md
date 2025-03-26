@@ -1,12 +1,17 @@
-# gumApi  
+## 📌 What is **gumApi**?  
 
-gumApi is a bridge between scripts and your framework. Thanks to gumApi, you don't need to use different versions of scripts; instead, you only need gumApi. This ensures that scripts will run on a wide range of frameworks.  
+gumApi acts as a **bridge** between your scripts and the framework. Instead of using different script versions for various frameworks, you only need **gumApi**.  
+This ensures that scripts run smoothly across a wide range of frameworks.  
 
-## Installation  
+---
 
-First, you must correctly place **gumApi**. Many customers make mistakes in this step, making it one of the most frequently asked questions. To ensure a proper and smooth installation, you must place gumApi between the script and the framework.  
+## ⚙️ **Installation Guide**  
 
-For example:  
+### 🔹 Correct Placement of **gumApi**  
+
+One of the most common mistakes during installation is incorrect placement. To ensure a **proper setup**, you must place **gumApi** **between the framework and the script**.  
+
+✅ **Example directory structure:**  
 
 ```
 vorp_core  
@@ -15,22 +20,24 @@ vorp_etc..
 vorp_etc..  
 gumApi  
 gum_stables  
-```  
+```
 
-This ensures that your framework loads first, **gumApi** retrieves information from the framework, and then the script itself loads properly.  
+This way, the framework loads first, gumApi retrieves the necessary data, and then your script initializes properly.  
 
-## Configuration  
+---
 
-Before using scripts, you need to configure gumApi.  
+## 🛠️ **Configuration**  
 
-Open the configuration file **"config.lua"** in gumApi and modify the following part:  
+Before using scripts, you need to configure **gumApi**.  
+
+1️⃣ Open **config.lua** in the gumApi folder.  
+2️⃣ Modify the following setting according to your framework:  
 
 ```lua
 Config.Framework = "GUM"
-```  
+```
 
-Of course, set it according to the framework you are using. The available options are:  
-
+### 🏗️ **Supported Frameworks**  
 - `"GUM"`  
 - `"VORP"`  
 - `"REDEM"`  
@@ -38,10 +45,13 @@ Of course, set it according to the framework you are using. The available option
 - `"QBR"`  
 - `"RSG"`  
 - `"RSG2"`  
-- `"CUSTOM"` (for custom structures, etc.)  
+- `"CUSTOM"` *(for custom structures)*  
 
-Additionally, you can configure the `"Config.Language"` section to set your preferred language.  
+Additionally, you can set the **language** in `"Config.Language"`.  
 
 ---
 
-Would you like to add anything else? 😊
+## ❓ Need Help?  
+
+If you encounter any issues, feel free to ask for **support**. 🚀  
+```
