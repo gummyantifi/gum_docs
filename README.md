@@ -1,5 +1,6 @@
-<img src="https://redwestrp.eu/videoNew.png" />
-
+<p align="center">
+  <img src="https://redwestrp.eu/videoNew.png" />
+</p
 ```markdown
 ## Welcome to **gum_docs**  
 
