@@ -1,5 +1,5 @@
 
-## gum_stables – Advanced Horse Management 🐎  
+## gum_stables 🐎  
 
 `gum_stables` is a **comprehensive script** with a **wide range of customizable settings**.  
 All configuration options and functions can be found in the **configuration file**.  
