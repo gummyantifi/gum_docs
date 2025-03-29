@@ -41,9 +41,9 @@ For a visual guide, refer to the following video: [Script Usage Video Guide](htt
 3. You can find offset information in the console under the F8 key for ConfigInteriorPreset.lua
 4. Via Interior_Book you can build
 
-## **Create exist house ** (i mean, opened interior at game)
+## **Create exist house** (i mean, opened interior at game)
 Via Build_Book press build at first page where is "?"
 
-## ** Land 
+## **Land** 
 Via Build_Book press build at last page where is "?"
 
