@@ -22,7 +22,7 @@ Once debug mode is enabled, navigate to the horse coloring menu.
 To define a new horse model with custom colors, add an entry in the following format:
 
 ```lua
-["A_C_Horse_AmericanPaint_Greyovero1_1"] = { -- Add a number to the model name (1,2,3, etc.)
+["A_C_Horse_AmericanPaint_Greyovero1"] = { -- Add a number to the model name (1,2,3, etc.)
     enabled = true,
     stables = {2, 3, 4},
     colorName = "Grey New",
@@ -47,7 +47,7 @@ To define a new horse model with custom colors, add an entry in the following fo
 ```
 
 ### Notes:
-- Replace `A_C_Horse_AmericanPaint_Greyovero1_1` with the appropriate horse model name and add a number if creating a variant.
+- Replace `A_C_Horse_AmericanPaint_Greyovero` with the appropriate horse model name and add a number if creating a variant.
 - Only add numerical values for colors.
 - Ensure you copy the "scale" value accurately from the console.
 
