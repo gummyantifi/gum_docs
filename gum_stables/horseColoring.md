@@ -53,3 +53,9 @@ To define a new horse model with custom colors, add an entry in the following fo
 
 This guide should help you set up and customize horses properly in your script. Enjoy your horse customization!
 
+
+### Video Guide
+If this text guide is not enough, you can also check out the video tutorial here:
+[Horse Coloring Video Guide](https://www.youtube.com/watch?v=I8KDT0ULBF0)
+
+This guide should help you set up and customize horses properly in your script. Enjoy your horse customization!
