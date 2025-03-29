@@ -1,25 +1,19 @@
-### Installation Steps
 
-To install and set up the script, follow these steps:
+## gum_housing 
 
-1. **Download API Script**
-   - Go to the Discord and download the API script from the following location: [API Script](https://discord.com/channels/870659641879724104/1048999455157919744)
+### 📌 Initial Installation & Configuration  
 
-2. **Start GumApi**
-   - Ensure you have GumApi installed on your server.
-   - Add the following line to your server configuration file:
-     ```
-     ensure gumApi
-     ```
-   - Start GumApi before running any custom scripts.
+1️⃣ **Translate the script**  
+   - Open the file: `config/configLanguage.lua`  
+   - Adjust the language settings as needed  
 
-3. **Download Script Assets**
-   - Visit the FiveM website at [keymaster.fivem.net/assets](https://keymaster.fivem.net/assets).
-   - Open the "Granded assets" section and download the script you want to use.
+2️⃣ **Enable Debug Mode**  
+   - Before testing, set `debug = true`  
+   - This helps load script settings dynamically **without restarting the game after each change**  
+
+⚠️ **Important:** When deploying the script on a live server, **disable debug mode** to prevent issues!  
 
 
-## Troubleshooting Tips
-- If you encounter an error related to exporting "stables" and you don't have it, open the client.lua file and remove any lines referencing "gum_stables".
 
 ### Teleporting between Houses
 - To teleport between houses, move out of the current house's range.
@@ -54,21 +48,14 @@ For a visual guide, refer to the following video: [Script Usage Video Guide](htt
 1. "/createInterior MODELNAME"
 2. Move your character to doors
 3. You can find offset information in the console under the F8 key for ConfigInteriorPreset.lua
-
 4. Via Interior_Book you can build
 
 
 
 
 ### **Create exist house ** (i mean, opened interior at game)
-1. Via Build_Book press build at first page where is "?"
+Via Build_Book press build at first page where is "?"
 
+## ** Land 
+Via Build_Book press build at last page where is "?"
 
-
-
-RSG CORE : 
-Replace at client for clothing menu : 
-   TriggerServerEvent("gum_housing:check_outfits")
-
-With this : 
-   TriggerEvent("rsg-clothes:OpenOutfits")
