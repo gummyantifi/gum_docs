@@ -13,8 +13,10 @@
 
 ⚠️ **Important:** When deploying the script on a live server, **disable debug mode** to prevent issues!  
 
-
---
+----------------------------
+----------------------------
+----------------------------
+----------------------------
 
 ## Teleporting between Houses
 - To teleport between houses, move out of the current house's range.
