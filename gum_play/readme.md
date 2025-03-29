@@ -1,43 +1,16 @@
-### Installation Steps
+### 📌 Initial Installation
+For functional knife game, you must register the session in your script.  
 
-To install and set up the script, follow these steps:
-
-1. **Download API Script**
-   - Go to the Discord and download the API script from the following location: [API Script](https://discord.com/channels/870659641879724104/1048999455157919744)
-
-2. **Start GumApi**
-   - Ensure you have GumApi installed on your server.
-   - Add the following line to your server configuration file:
-     ```
-     ensure gumApi
-     ```
-   - Start GumApi before running any custom scripts.
-
-3. **Download Script Assets**
-   - Visit the FiveM website at [keymaster.fivem.net/assets](https://keymaster.fivem.net/assets).
-   - Open the "Granded assets" section and download the script you want to use.
-
-4. **Start Script**
-   - Start the script after GumApi is running.
-
-5. **Configure and Enjoy**
-   - Modify the configuration file according to your preferences.
-   - Play around with the script and enjoy its features.
-
-**WARNING:** Some scripts require server-side startup and cannot be used while you are in the game. Make sure to start the script before joining the game to load all the necessary information from the SQL database.
-
-Feel free to reach out if you have any questions or need further assistance. Enjoy using the script!
-
-
-
-**Setup:**
-For setup on chair you need you this :
-```
-				TriggerEvent("gum_play:sitOnChair", true)
-```
-
-for cancel :
+At the moment when the player starts sitting (e.g., via a key press), the following should be placed:  
 
 ```
-				TriggerEvent("gum_play:sitOnChair", false)
+TriggerEvent("gum_play:sitOnChair", true)
 ```
+
+And in case the sitting session is canceled:  
+
+```
+TriggerEvent("gum_play:sitOnChair", false)
+```
+
+(This allows the script to track whether the player is sitting or not and releases the mini-game.)
