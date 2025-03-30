@@ -9,8 +9,8 @@ All configuration options and functions can be found in the **configuration file
 
 1️⃣ **Check SQL Tables**  
 - Many users make the mistake of trying to run the script when they have previously used stables from a framework. To avoid this issue, **check your database tables**:  
-  - Ensure that the tables **"horses"** and **"wagons"** do not already exist in your database.  
-  - If they exist, **right-click** on the table and select **"Drop"** to remove them before proceeding.  
+  - Ensure that the tables `horses` and `wagons` do not already exist in your database.  
+  - If they exist, `right-click` on the table and select `Drop` to remove them before proceeding.  
 
 2️⃣ **Translate the script**  
    - Open the file: `cfg/configLang.lua`  
