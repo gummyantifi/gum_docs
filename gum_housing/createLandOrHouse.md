@@ -1,7 +1,3 @@
-Here is the translation of the instructions in English:
-
----
-
 # Creating Houses and Interiors from Presets in the Game
 
 ## Simplest Part:
