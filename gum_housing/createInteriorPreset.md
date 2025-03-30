@@ -82,3 +82,7 @@ Teleportation houses are simpler to set up. You only need to define the coordina
 - **["DoorCoords"]**: Coordinates and rotation (x, y, z, heading) of the door leading to the teleport location.
 
 3. Replace `interiorModelName` with the desired interior model name, and set the coordinates for the teleportation door.
+
+### 4. Final Steps
+- The interiors is now ready for use.
+- **Don't forget to add an image** in `gum_housing/pages/` with the model’s name (`house_model_nya.png`).
