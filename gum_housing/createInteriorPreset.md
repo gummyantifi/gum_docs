@@ -73,7 +73,7 @@ Teleportation houses are simpler to set up. You only need to define the coordina
 2. Add the following structure, defining the teleportation location:
 
 ```lua
-["interiorModelName"] = {
+["interiorModelName"] = {--Some teleportation houses do not have a model. For example, you can write here "Tleeportublackwater" practically doesn't matter what is here.
     ["Interior_Model"] = "",
     ["DoorCoords"] = {-807.49, -1500.8, 42.55, 68.81}  -- {x, y, z, heading}
 }
@@ -85,4 +85,4 @@ Teleportation houses are simpler to set up. You only need to define the coordina
 
 ### 4. Final Steps
 - The interiors is now ready for use.
-- **Don't forget to add an image** in `gum_housing/pages/` with the model’s name (`house_model_nya.png`).
+- **Don't forget to add an image** in `gum_housing/pages/` with the model’s name (`int3.png`).
