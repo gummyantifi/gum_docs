@@ -1,51 +1,131 @@
+# CraftingHelper
 
-## gum_housing 
+**CraftingHelper** is a simple tool designed to make creating recipes for **gum_craft** easier and faster.
 
-### 📌 Initial Installation & Configuration  
+Instead of manually writing large configuration files, CraftingHelper automatically generates the correct recipe structure for you.
 
-1️⃣ **Translate the script**  
-   - Open the file: `config/configLanguage.lua`  
-   - Adjust the language settings as needed  
+---
 
-2️⃣ **Enable Debug Mode**  
-   - Before testing, set `debug = true`  
-   - This helps load script settings dynamically **without restarting the game after each change**  
+## 📖 Creating a New Crafting Book
 
-⚠️ **Important:** When deploying the script on a live server, **disable debug mode** to prevent issues!  
+To create a new crafting book, simply click:
 
-----------------------------
-----------------------------
-----------------------------
-----------------------------
+```
+ADD Book
+```
 
-## Teleporting between Houses
-- To teleport between houses, move out of the current house's range.
-- Use the teleport function to move to the desired house.
+This will create a new empty crafting book:
 
-## **Custom House Position Creation**
-1. Enable Config.Debug in the script settings.
-2. In-game, use the command "/createHouse ModelName".
-3. Position the house objects as desired.
-4. Press Enter or Backspace to save the coordinates to the clipboard.
+```
+A_newBook
+```
 
-## **Adding Doors and Windows to a Custom House**
-1. With Config.Debug enabled, use the command "/createHouse ModelName" in-game to begin creating a custom house.
-2. Place doors and windows in the desired locations.
-3. Use the command "/createPosition ModelName 1" to mark the position of each door and window.
-4. Repeat the process for additional positions as needed.
-5. Press Backspace to save all the information to the clipboard. You can then paste it (Ctrl+V) to easily add doors and windows.
-For a visual guide, refer to the following video: [Script Usage Video Guide](https://youtu.be/QnCAQtMmEM8)
-6. Via Interior_Book you can build
+You can then customize it:
 
-## **Create interior for teleport**
-1. "/createInterior MODELNAME"
-2. Move your character to doors
-3. You can find offset information in the console under the F8 key for ConfigInteriorPreset.lua
-4. Via Interior_Book you can build
+### Book Name
 
-## **Create exist house** (i mean, opened interior at game)
-Via Build_Book press build at first page where is "?"
+```
+name
+```
 
-## **Land** 
-Via Build_Book press build at last page where is "?"
+Set the display name of your crafting book.
 
+Example:
+
+```
+Drug Manufacturing
+```
+
+---
+
+### Item ID
+
+```
+item_id
+```
+
+Defines the item required to open the crafting book.
+
+Example:
+
+```
+Cocaine
+```
+
+After that, simply configure the remaining options according to the structure provided by CraftingHelper.
+
+---
+
+# ❔ Built-in Help System
+
+CraftingHelper includes a built-in help system.
+
+By clicking the:
+
+```
+?
+```
+
+button, you can see detailed information about each option and what every field does.
+
+This allows you to easily understand the configuration without constantly checking the documentation.
+
+---
+
+# 💾 Saving Your Work
+
+Once you have finished creating your crafting books and recipes, click:
+
+```
+Save All
+```
+
+This will save your current CraftingHelper setup.
+
+Your saved configuration can be opened and edited again in the future.
+
+---
+
+# 📋 Exporting Recipes To gum_craft
+
+When your crafting setup is ready, click:
+
+```
+Copy All Book Data
+```
+
+CraftingHelper will automatically copy the complete crafting configuration.
+
+Now open:
+
+```
+gum_craft/configRecipes.lua
+```
+
+Replace the old configuration:
+
+```
+CTRL + A
+```
+
+and paste the new one:
+
+```
+CTRL + V
+```
+
+Your old recipes will now be replaced with the newly generated CraftingHelper configuration.
+
+---
+
+# 🚀 Why Use CraftingHelper?
+
+CraftingHelper makes managing large crafting systems much easier:
+
+✅ No manual configuration writing  
+✅ Automatic recipe structure generation  
+✅ Built-in explanations for every option  
+✅ Faster recipe creation  
+✅ Easy export directly into gum_craft  
+
+Create your crafting system faster and with fewer configuration mistakes.
