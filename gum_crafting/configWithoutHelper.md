@@ -16,30 +16,12 @@ Example:
 
 ```lua
 ["Cocaine"] = { -- Book key (unique identifier of crafting book)
-
-    -- Item required to open crafting book.
-    -- nil = no item required, crafting can only be opened from coordinates.
-    ["item"] = "Cocaine",
-
-    -- Jobs allowed to access this crafting book.
-    -- Empty table {} = everyone can access.
-    ["job"] = {"Drugs", "Bandits"},
-
-    -- Command used to open crafting menu.
-    -- false = disabled.
-    -- true = uses Config.CraftingCommand.
-    ["command"] = false,
-
-    -- Description displayed in crafting UI.
-    ["description"] = "A powerful stimulant drug that can be used recreationally or in the production of other substances.",
-
-    -- Display name of crafting book.
-    ["label"] = "Cocaine",
-
-
-    -- Crafting locations.
-    -- You can add multiple crafting points.
-    ["coords"] = {
+    ["item"] = "Cocaine",-- Item required to open crafting book. -- nil = no item required, crafting can only be opened from coordinates.
+    ["job"] = {"Drugs", "Bandits"},-- Jobs allowed to access this crafting book.
+    ["command"] = false,-- Command used to open crafting menu. (false = disabled = use it itemId for open) (true = use Config.CraftingCommand).
+    ["description"] = "A powerful stimulant drug that can be used recreationally or in the production of other substances.",-- Description displayed in crafting UI.
+    ["label"] = "Cocaine",-- Display item name in crafting book.
+    ["coords"] = {-- Crafting locations. //You can add multiple crafting points.
         {1777.6832275390625, -651.0060424804688, 42.6624870300293},
         {-2257.0810546875, -1912.63330078125, 117.27413940429688},
         {-157.4902801513672, 1491.6593017578125, 116.1640853881836}
