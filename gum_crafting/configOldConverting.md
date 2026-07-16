@@ -19,7 +19,7 @@ Copy the whole configuration that contains your existing crafting recipes.
 Open:
 
 ```
-CraftingHelper/configRecipes.lua
+CraftingHelper/config.lua
 ```
 
 Replace the existing content with your old configuration.
