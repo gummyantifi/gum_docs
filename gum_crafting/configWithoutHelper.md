@@ -26,8 +26,6 @@ Example:
         {-2257.0810546875, -1912.63330078125, 117.27413940429688},
         {-157.4902801513672, 1491.6593017578125, 116.1640853881836}
     },
-
-
     -- Available crafting recipes.
     ["craftItems"] = {
         {
@@ -57,8 +55,6 @@ Example:
             ["profession"] = {"Drug Manufacturing", 3}, -- Required profession. // Format: {"Profession Name", Level}
             ["hideRecipe"] = false,-- Hide recipe if requirements are not met (grade / profession). -- true = hidden, false = visible.
             ["categoryImage"] = "",-- Category image from inventory icons. // Empty string = no image.
-            
-            
             ["giveBack"] = { -- Items returned after crafting. -- false/nil = no returned items.
                 {["item"] = "Injection", ["count"] = 1 }
             }
