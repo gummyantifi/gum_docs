@@ -69,7 +69,7 @@ By clicking the:
 button, you can see detailed information about each option and what every field does.
 
 This allows you to easily understand the configuration without constantly checking the documentation.
-
+(in itemId, label, and recipe where u need write 1, itemId, label) u can use @ whispering. Thats help u made recipes faster.
 ---
 
 # 💾 Saving Your Work
