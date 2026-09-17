@@ -14,13 +14,13 @@ The recommended and easier way is to use the in-game Ranch Creator.
 
 `50` = Creator distance. You can increase this for larger ranches.
 
-### 2. config.lua
+### 2. configRanch.lua
 
-You can also configure ranches manually using `config.lua`.
+You can also configure ranches manually using `configRanch.lua`.
 
-However, the `config.lua` uses the old/manual configuration format.
+However, the `configRanch.lua` uses the old/manual configuration format.
 
-After making changes to `config.lua`, you **must convert the configuration** using:
+After making changes to `configRanch.lua`, you **must convert the configuration** using:
 
 ```text
 /ranchcreator 50 convert
