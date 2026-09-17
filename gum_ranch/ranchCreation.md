@@ -1,5 +1,39 @@
 **# Ranch Creator Guide**
 
+**## Two Ways to Create a Ranch**
+
+There are **two ways** to create and configure a ranch:
+
+### 1. Ranch Creator
+
+The recommended and easier way is to use the in-game Ranch Creator.
+
+```text
+/ranchcreator 50
+```
+
+`50` = Creator distance. You can increase this for larger ranches.
+
+### 2. config.lua
+
+You can also configure ranches manually using `config.lua`.
+
+However, the `config.lua` uses the old/manual configuration format.
+
+After making changes to `config.lua`, you **must convert the configuration** using:
+
+```text
+/ranchcreator 50 convert
+```
+
+This converts the configuration and saves it to:
+
+```text
+data.json
+```
+
+So if you modify `config.lua` later, remember to run the convert command again.
+
 **## Opening the Creator**
 
 Use:
@@ -8,15 +42,9 @@ Use:
 /ranchcreator 50
 ```
 
-`50` = Creator distance. Increase it for larger ranches.
+The Creator will open if your player group has permission to use it.
 
-For converting the old/manual configuration:
-
-```text
-/ranchcreator 50 convert
-```
-
-This converts the old ranch configuration and saves it to `data.json`.
+Press **ESC** to close the Creator.
 
 **## Creating a Ranch**
 
@@ -48,19 +76,13 @@ Simply **stand where you want the position and click the corresponding field**.
 
 The Creator automatically inserts your current coordinates.
 
-**### NPC Model & Position**
+**### NPC**
 
-Enter the model you want to use in **NPC Model**.
+Enter the NPC model in **NPC Model**.
 
-The NPC position is also taken from your current position when you use the **Coords for buy** field.
+Then stand where you want the NPC/buy spot and click **Coords for buy**.
 
-So simply:
-
-```text
-1. Stand where the NPC should be
-2. Enter the NPC model
-3. Click Coords for buy
-```
+The position will be taken from where you are standing.
 
 **### Blip**
 
@@ -92,9 +114,9 @@ Goat
 Horse
 ```
 
-Animal positions are also taken directly from your current position.
+Animal positions are also taken from your current position.
 
-Simply **stand where you want the animal to spawn** and click:
+Stand where you want the animal to spawn and click:
 
 ```text
 Set cow coords
@@ -110,7 +132,7 @@ Click an existing position to remove it.
 
 Each animal has its own trough position.
 
-Stand where you want the trough and click the corresponding field:
+Stand where you want the trough and click:
 
 ```text
 Cow trough
@@ -125,9 +147,7 @@ The current position and heading will be inserted automatically.
 
 **## Preview**
 
-While configuring a ranch, the Creator shows the configured positions in the world.
-
-You can see:
+While configuring a ranch, the Creator shows the configured positions in the world:
 
 ```text
 Ranch Center
@@ -154,7 +174,7 @@ New ranches automatically receive their own `key`.
 
 Select an existing ranch from the list.
 
-You can change its settings and save them again with:
+You can edit its settings and save them again with:
 
 ```text
 Create/Save Ranch
@@ -180,49 +200,14 @@ You can modify:
 
 You can also add or delete animals directly from this menu.
 
-**## Using config.lua**
-
-You can also create your ranches manually using the `config.lua` file.
-
-However, manually configured ranches use the old configuration format.
-
-After making changes in `config.lua`, you need to convert the configuration using:
-
-```text
-/ranchcreator 50 convert
-```
-
-The Creator will convert the configuration and save it to:
-
-```text
-data.json
-```
-
-**### Quick Setup**
-
-```text
-/ranchcreator 50
-```
-
-1. **Create New Ranch**
-2. Set the ranch name/job
-3. Stand in the ranch center → click **Ranch center**
-4. Stand where the NPC should be → click **Coords for buy**
-5. Set the NPC model
-6. Set the remaining coordinates from your current position
-7. Add animal positions
-8. Set troughs
-9. Configure blip and prices
-10. Click **Create/Save Ranch**
-
 **### Notes:**
 
-- **All positions are taken from your current position** when using the coordinate buttons — including ranch positions, NPC/buy spot, animal positions and troughs.
+- **All coordinate buttons use your current position** — including the ranch center, buy/NPC spot, animal positions and troughs.
 
 - You can add multiple positions for each animal.
 
 - Use a larger distance in `/ranchcreator 50` for larger ranches.
 
-- Press **ESC** to close the Creator.
+- If you use `config.lua`, remember to run `/ranchcreator 50 convert` after making changes.
 
-- If you manually edit `config.lua`, remember to run the **convert command again** after making changes.
+- The `convert` command is only needed when using the manual `config.lua` method.
