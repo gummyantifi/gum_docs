@@ -32,7 +32,7 @@ This converts the configuration and saves it to:
 data.json
 ```
 
-So if you modify `config.lua` later, remember to run the convert command again.
+So if you modify `configRanch.lua` later, remember to run the convert command again.
 
 **## Opening the Creator**
 
