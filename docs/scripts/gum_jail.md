@@ -1,3 +1,7 @@
+---
+icon: handcuffs
+---
+
 # GUM Jail
 
 GUM Jail is a jail script for RedM. It covers handcuffing, dragging, jailing, wagon transport, escapes, and hanging.

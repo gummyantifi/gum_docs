@@ -1,3 +1,7 @@
+---
+icon: wrench
+---
+
 # GUM Stables: troubleshooting
 
 This page lists the `gum_stables` problems that support tickets and the changelog show a fix for, plus the config lines, translation lines, and files added in updates.

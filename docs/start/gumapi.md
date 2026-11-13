@@ -1,3 +1,7 @@
+---
+icon: plug
+---
+
 # Install gumApi
 
 Always install gumApi before any GUM script. Download the current version from the **gumapi-and-docs** channel in the GUM Scripts Discord: [open the download post](https://discord.com/channels/870659641879724104/1048999455157919744/1341408039324090388).

@@ -1,35 +1,30 @@
+---
+description: Install, configure, and fix GUM Scripts for RedM. No account needed to read anything here.
+icon: hat-cowboy
+---
+
 # GUM Scripts documentation
 
-Install, configure, and fix GUM Scripts for RedM. No account needed to read anything here.
+{% hint style="warning" %}
+Every GUM script needs **gumApi** installed first, between your framework and the script.
+{% endhint %}
 
 ## Start here
 
-Every GUM script needs **gumApi** installed first, between your framework and the script.
+- [Install gumApi](start/gumapi.md)
+- [gumApi troubleshooting](start/gumapi-troubleshooting.md)
+- [Buying, roles, and support](start/buying-and-support.md)
 
-- [Install gumApi](./start/gumapi.md)
-- [gumApi troubleshooting](./start/gumapi-troubleshooting.md)
-- [Buying, roles, and support](./start/buying-and-support.md)
+<a href="https://gum-scripts.tebex.io/category/redm" class="button primary">Open the store</a> <a href="https://discord.gg/DmvEXfkxW7" class="button secondary">Join the Discord</a>
 
 ## Scripts with full guides
 
 Written by the developer, with a troubleshooting page added from resolved tickets.
 
-| Script | Guides |
-|---|---|
-| [Crafting](./scripts/gum_crafting/index.md) | Config helper, manual config, converting an old config, troubleshooting |
-| [Housing](./scripts/gum_housing/index.md) | Install, house presets, interior presets, land and houses in game, troubleshooting |
-| [Ranch](./scripts/gum_ranch/index.md) | Ranch creator, troubleshooting |
-| [Stables](./scripts/gum_stables/index.md) | Install, horse coloring, troubleshooting |
+<table data-view="cards" data-card-size="large"><thead><tr><th></th><th></th><th data-hidden data-card-target data-type="content-ref"></th><th data-hidden data-card-cover data-type="image">Cover image</th></tr></thead><tbody><tr><td><strong>Crafting</strong></td><td>Config helper, manual config, converting an old config, troubleshooting</td><td><a href="scripts/gum_crafting/index.md">index.md</a></td><td><a href="https://dunb17ur4ymx4.cloudfront.net/packages/images/306478934769becc83ae0d9d4e69b32364e51933.png">Crafting</a></td></tr><tr><td><strong>Housing</strong></td><td>Install, house presets, interior presets, land and houses in game, troubleshooting</td><td><a href="scripts/gum_housing/index.md">index.md</a></td><td><a href="https://dunb17ur4ymx4.cloudfront.net/packages/images/bc51a33c9d05e5b67df91c16c970daf4ead8808b.png">Housing</a></td></tr><tr><td><strong>Ranch</strong></td><td>Ranch creator, troubleshooting</td><td><a href="scripts/gum_ranch/index.md">index.md</a></td><td><a href="https://dunb17ur4ymx4.cloudfront.net/packages/images/3374358b6f17572075dce4285a511694a438f442.png">Ranch</a></td></tr><tr><td><strong>Stables</strong></td><td>Install, horse coloring, troubleshooting</td><td><a href="scripts/gum_stables/index.md">index.md</a></td><td><a href="https://dunb17ur4ymx4.cloudfront.net/packages/images/76bdf84443109da017226943d236fed7914a7b18.png">Stables</a></td></tr></tbody></table>
 
 ## All other scripts
 
 One page each: what the script does, what to do before installing, the settings and fixes that have come up in the changelog and in support.
 
-| | | |
-|---|---|---|
-| [Animmenu](./scripts/gum_animmenu.md) | [Bank](./scripts/gum_bank.md) | [Blackjack](./scripts/gum_blackjack.md) |
-| [Book](./scripts/gum_book.md) | [Camping](./scripts/gum_camping.md) | [Cooking](./scripts/gum_cooking.md) |
-| [Ecology](./scripts/gum_ecology.md) | [Farming](./scripts/gum_farming.md) | [Horses](./scripts/gum_horses.md) |
-| [Jail](./scripts/gum_jail.md) | [MDT](./scripts/gum_mdt.md) | [Newspapers](./scripts/gum_newspapers.md) |
-| [Pets](./scripts/gum_pets.md) | [Poker](./scripts/gum_poker.md) | [Posters](./scripts/gum_posters.md) |
-| [Stores](./scripts/gum_stores.md) | [Treasure](./scripts/gum_treasure.md) | [Wagons](./scripts/gum_wagons.md) |
+<table data-view="cards"><thead><tr><th></th><th data-hidden data-card-target data-type="content-ref"></th><th data-hidden data-card-cover data-type="image">Cover image</th></tr></thead><tbody><tr><td><strong>Animmenu</strong></td><td><a href="scripts/gum_animmenu.md">gum_animmenu.md</a></td><td><a href="https://dunb17ur4ymx4.cloudfront.net/packages/images/d61205ade92f7b38250e764cd1081015f45bdd85.png">Animmenu</a></td></tr><tr><td><strong>Bank</strong></td><td><a href="scripts/gum_bank.md">gum_bank.md</a></td><td><a href="https://dunb17ur4ymx4.cloudfront.net/packages/images/d613ae91c927a4d1da196f1ab859820ec8d8cf37.png">Bank</a></td></tr><tr><td><strong>Blackjack</strong></td><td><a href="scripts/gum_blackjack.md">gum_blackjack.md</a></td><td><a href="https://dunb17ur4ymx4.cloudfront.net/packages/images/230202da4b492ee303cb2a0bbb21da9f823f7409.png">Blackjack</a></td></tr><tr><td><strong>Book</strong></td><td><a href="scripts/gum_book.md">gum_book.md</a></td><td><a href="https://dunb17ur4ymx4.cloudfront.net/packages/images/efda56e7f01d9181582d4c0ee203ca2f9a8aa797.png">Book</a></td></tr><tr><td><strong>Camping</strong></td><td><a href="scripts/gum_camping.md">gum_camping.md</a></td><td><a href="https://dunb17ur4ymx4.cloudfront.net/packages/images/39f77b0ddbbff7c063f8ce22ec6b3f76a136828d.png">Camping</a></td></tr><tr><td><strong>Cooking</strong></td><td><a href="scripts/gum_cooking.md">gum_cooking.md</a></td><td><a href="https://dunb17ur4ymx4.cloudfront.net/packages/images/9a8f8448abbeb37ececeedf90985aeaa3d39bb11.png">Cooking</a></td></tr><tr><td><strong>Ecology</strong></td><td><a href="scripts/gum_ecology.md">gum_ecology.md</a></td><td><a href="https://dunb17ur4ymx4.cloudfront.net/packages/images/c3e57ed9f444961a0fbb39a87f0441023817395b.png">Ecology</a></td></tr><tr><td><strong>Farming</strong></td><td><a href="scripts/gum_farming.md">gum_farming.md</a></td><td><a href="https://dunb17ur4ymx4.cloudfront.net/packages/images/eaebe46d89f567733def1c1be3808c63593fae3a.png">Farming</a></td></tr><tr><td><strong>Horses</strong></td><td><a href="scripts/gum_horses.md">gum_horses.md</a></td><td><a href="https://dunb17ur4ymx4.cloudfront.net/packages/images/6ad0262ceed5cf64d1b00868c177df1c53570aee.png">Horses</a></td></tr><tr><td><strong>Jail</strong></td><td><a href="scripts/gum_jail.md">gum_jail.md</a></td><td><a href="https://dunb17ur4ymx4.cloudfront.net/packages/images/81ffc220534c8718424eb24a85a6d0504c81daa9.png">Jail</a></td></tr><tr><td><strong>MDT</strong></td><td><a href="scripts/gum_mdt.md">gum_mdt.md</a></td><td><a href="https://dunb17ur4ymx4.cloudfront.net/packages/images/448e4212bee52f208264bb7cc1e91079012c1ec5.png">MDT</a></td></tr><tr><td><strong>Newspapers</strong></td><td><a href="scripts/gum_newspapers.md">gum_newspapers.md</a></td><td><a href="https://dunb17ur4ymx4.cloudfront.net/packages/images/65819b61cfeaced5a96b68032c6c7f65f66e5f8c.png">Newspapers</a></td></tr><tr><td><strong>Pets</strong></td><td><a href="scripts/gum_pets.md">gum_pets.md</a></td><td><a href="https://dunb17ur4ymx4.cloudfront.net/packages/images/ef0addd8a03b8676d4c038eb8eaab4e6d0efddf6.png">Pets</a></td></tr><tr><td><strong>Poker</strong></td><td><a href="scripts/gum_poker.md">gum_poker.md</a></td><td><a href="https://dunb17ur4ymx4.cloudfront.net/packages/images/1c8db9b01601a27b1b8849b4fdbda6a95da25696.png">Poker</a></td></tr><tr><td><strong>Posters</strong></td><td><a href="scripts/gum_posters.md">gum_posters.md</a></td><td><a href="https://dunb17ur4ymx4.cloudfront.net/packages/images/43abca572fbfd5deb5aa267b8a269d4b03665a9b.png">Posters</a></td></tr><tr><td><strong>Stores</strong></td><td><a href="scripts/gum_stores.md">gum_stores.md</a></td><td><a href="https://dunb17ur4ymx4.cloudfront.net/packages/images/f510555dd0b102b4afb1ff8763a2d1a15ef76912.png">Stores</a></td></tr><tr><td><strong>Treasure</strong></td><td><a href="scripts/gum_treasure.md">gum_treasure.md</a></td><td><a href="https://dunb17ur4ymx4.cloudfront.net/packages/images/8bf36a864844c28a1bf30e07e4c734e42a4a9142.png">Treasure</a></td></tr><tr><td><strong>Wagons</strong></td><td><a href="scripts/gum_wagons.md">gum_wagons.md</a></td><td><a href="https://dunb17ur4ymx4.cloudfront.net/packages/images/17a1aef130c2f156f20f82d12f87ca3c765c7644.png">Wagons</a></td></tr></tbody></table>

@@ -1,3 +1,7 @@
+---
+icon: dice
+---
+
 # GUM Blackjack
 
 GUM Blackjack is a multiplayer blackjack game for RedM. Players sit at configurable tables and bet against an automatic dealer.

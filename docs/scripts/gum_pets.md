@@ -1,3 +1,7 @@
+---
+icon: dog
+---
+
 # GUM Pets
 
 GUM Pets adds ownable pets to your RedM server: players buy them from pet shops, train them, breed them, and take them hunting. Pets have their own health, hunger, thirst, and age.

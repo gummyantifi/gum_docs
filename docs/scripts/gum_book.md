@@ -1,3 +1,7 @@
+---
+icon: book
+---
+
 # GUM Book
 
 GUM Book is a book and journal system. Players buy book items, write and format their own pages, add images, and tear pages out to hand over or place in the world.

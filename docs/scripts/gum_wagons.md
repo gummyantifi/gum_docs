@@ -1,3 +1,7 @@
+---
+icon: wagon-covered
+---
+
 # GUM Wagons
 
 GUM Wagons is a wagon management and crafting system. Players build wagons, repair them, hitch draft horses, haul cargo, and trade wagons with each other.

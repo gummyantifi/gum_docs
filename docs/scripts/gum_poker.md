@@ -1,3 +1,7 @@
+---
+icon: coins
+---
+
 # GUM Poker
 
 GUM Poker is a multiplayer poker system for RedM with two variants, Texas Hold'em and Five Card Draw. It uses physical cards and chips on configurable tables.

@@ -1,3 +1,7 @@
+---
+icon: horse
+---
+
 # GUM Horses
 
 GUM Horses is a horse ownership system for RedM. It covers genetics and breeding, training, horse needs, customization, auctions, and trading between players.

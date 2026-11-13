@@ -1,3 +1,7 @@
+---
+icon: wrench
+---
+
 # gumApi: troubleshooting
 
 This page lists the gumApi problems that support tickets and the changelog have already solved, plus what changed in recent updates.

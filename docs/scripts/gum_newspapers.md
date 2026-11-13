@@ -1,3 +1,7 @@
+---
+icon: newspaper
+---
+
 # GUM Newspapers
 
 GUM Newspapers lets players write, design, and publish newspapers in-game on RedM. A finished newspaper becomes an inventory item that can be handed out on your server.

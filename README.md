@@ -25,6 +25,10 @@ After that, a change pushed to `main` shows up on the site, and an edit made in 
 - A new page also needs one line in `docs/SUMMARY.md`, or GitBook will not show it in the sidebar.
 - Link between pages with relative paths that end in `.md`, such as `../start/gumapi.md`.
 
+## Look and brand
+
+Colors, type, art, and every GitBook setting the site uses are written down in [brand/README.md](brand/README.md). Page icons and the home page cards are set in the Markdown files; the theme is set in GitBook under **Customize**.
+
 ## Where the pages come from
 
 - `docs/start/gumapi.md` and the guides in `docs/scripts/gum_crafting`, `gum_housing`, `gum_ranch`, and `gum_stables` are the original guides from this repo, moved into `docs/`.
