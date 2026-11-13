@@ -1,3 +1,7 @@
+---
+icon: horse-head
+---
+
 # GUM Stables: install and configure
 
 `gum_stables` is a **comprehensive script** with a **wide range of customizable settings**.  

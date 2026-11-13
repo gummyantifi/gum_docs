@@ -1,3 +1,7 @@
+---
+icon: scroll
+---
+
 # GUM Posters
 
 GUM Posters gives your RedM server notice boards where players pin images by link. Boards can be tied to a city, shared globally, or reserved for events.

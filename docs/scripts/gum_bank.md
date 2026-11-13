@@ -1,3 +1,7 @@
+---
+icon: building-columns
+---
+
 # GUM Bank
 
 GUM Bank is a banking system for RedM. You can run it as simple automatic banks, or turn on bankers, loans, savings, investments, checks, and banks that operate on their own funds.

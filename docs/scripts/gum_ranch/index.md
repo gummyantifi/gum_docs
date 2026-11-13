@@ -1,3 +1,7 @@
+---
+icon: cow
+---
+
 # Ranch Creator Guide
 
 ## Two Ways to Create a Ranch

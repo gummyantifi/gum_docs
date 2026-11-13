@@ -1,3 +1,7 @@
+---
+icon: wheat-awn
+---
+
 # GUM Farming
 
 GUM Farming is a configurable farming system for RedM. It covers everything from simple seed planting to farms with NPC workers, automation, and shared farm resources.

@@ -1,3 +1,7 @@
+---
+icon: hammer
+---
+
 # Advanced Crafting System
 
 A fully configurable crafting system designed for immersive roleplay servers.

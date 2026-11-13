@@ -1,3 +1,7 @@
+---
+icon: wrench
+---
+
 # GUM Crafting: troubleshooting
 
 This page lists the `gum_craft` problems that support tickets and the changelog show a fix for, plus what changed in recent updates.

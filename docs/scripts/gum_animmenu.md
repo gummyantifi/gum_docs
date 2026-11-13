@@ -1,3 +1,7 @@
+---
+icon: person-running
+---
+
 # GUM Animmenu
 
 GUM Animmenu is an animation menu for RedM with over 250 animations, scenarios, shared interactions, props, walking styles, and a built-in sitting system. Players can save favorites, bind keys, and trigger animations from chat commands.

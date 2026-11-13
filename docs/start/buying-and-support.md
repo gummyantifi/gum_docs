@@ -1,3 +1,7 @@
+---
+icon: cart-shopping
+---
+
 # Buying, roles, and support
 
 ## Buying

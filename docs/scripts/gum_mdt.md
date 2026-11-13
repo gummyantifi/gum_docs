@@ -1,3 +1,7 @@
+---
+icon: clipboard-list
+---
+
 # GUM MDT
 
 GUM MDT is a records system for law and government jobs on RedM: person records, cases, prisoners, documents, and wanted persons. It ships together with a bounty hunt system, and its updates are published under the name `gum_mdt_bountyhunt`.

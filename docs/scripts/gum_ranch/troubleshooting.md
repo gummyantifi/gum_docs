@@ -1,3 +1,7 @@
+---
+icon: wrench
+---
+
 # GUM Ranch: troubleshooting
 
 This page lists the ranch problems that support tickets and the changelog have already solved, plus the settings added in updates.

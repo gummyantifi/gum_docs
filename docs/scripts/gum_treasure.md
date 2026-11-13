@@ -1,3 +1,7 @@
+---
+icon: gem
+---
+
 # GUM Treasure
 
 GUM Treasure is a treasure hunting script for RedM. Players follow maps to a spot, dig with a shovel, and collect rewards.

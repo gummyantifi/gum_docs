@@ -1,3 +1,7 @@
+---
+icon: store
+---
+
 # GUM Stores
 
 GUM Stores is an NPC and player-owned store system for RedM. It includes dynamic pricing, weekly limits, opening hours, and support for faction businesses.

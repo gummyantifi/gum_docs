@@ -1,3 +1,7 @@
+---
+icon: utensils
+---
+
 # GUM Cooking
 
 GUM Cooking adds four food and drink activities to your server: cooking in a cauldron, cutting meat, distilling, and grinding with a mortar and pestle. Each one uses recipes you define.

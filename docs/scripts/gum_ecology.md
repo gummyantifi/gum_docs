@@ -1,3 +1,7 @@
+---
+icon: leaf
+---
+
 # GUM Ecology
 
 GUM Ecology is a wildlife and nature system for RedM. It handles plant spawning and gathering, animal skinning rewards, and a Field Atlas where players document the plants, animals, and wild horses they find.

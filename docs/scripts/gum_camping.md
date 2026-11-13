@@ -1,3 +1,7 @@
+---
+icon: campground
+---
+
 # GUM Camping
 
 GUM Camping lets players build their own camp, fill it with props and storage, and keep it maintained. Camps can include a CraftMaster and a Butcher, and everything in a camp is saved in the database.

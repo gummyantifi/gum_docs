@@ -1,3 +1,7 @@
+---
+icon: wrench
+---
+
 # GUM Housing: troubleshooting
 
 This page lists the housing problems that support tickets and the changelog have already solved, plus the settings added in updates.

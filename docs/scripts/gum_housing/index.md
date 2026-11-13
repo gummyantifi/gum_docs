@@ -1,3 +1,6 @@
+---
+icon: house-chimney
+---
 
 # GUM Housing: install and configure
 
