@@ -1,4 +1,4 @@
-## gum_stables 🐎  
+# GUM Stables: install and configure
 
 `gum_stables` is a **comprehensive script** with a **wide range of customizable settings**.  
 All configuration options and functions can be found in the **configuration file**.  

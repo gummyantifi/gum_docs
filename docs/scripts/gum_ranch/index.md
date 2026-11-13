@@ -1,6 +1,6 @@
-**# Ranch Creator Guide**
+# Ranch Creator Guide
 
-**## Two Ways to Create a Ranch**
+## Two Ways to Create a Ranch
 
 There are **two ways** to create and configure a ranch:
 
@@ -34,7 +34,7 @@ data.json
 
 So if you modify `configRanch.lua` later, remember to run the convert command again.
 
-**## Opening the Creator**
+## Opening the Creator
 
 Use:
 
@@ -46,7 +46,7 @@ The Creator will open if your player group has permission to use it.
 
 Press **ESC** to close the Creator.
 
-**## Creating a Ranch**
+## Creating a Ranch
 
 Select:
 
@@ -56,14 +56,14 @@ Create New Ranch
 
 Then configure the ranch.
 
-**### Basic Settings**
+### Basic Settings
 
 - **Ranch Name** – Name of the ranch
 - **Job** – Job used by the ranch
 - **Ranch disabled** – Disables the ranch
 - **Clearing default NPCs and animals** – Removes default NPCs and animals around the ranch
 
-**### Ranch Coordinates**
+### Ranch Coordinates
 
 All coordinates can be set directly from your current position.
 
@@ -76,7 +76,7 @@ Simply **stand where you want the position and click the corresponding field**.
 
 The Creator automatically inserts your current coordinates.
 
-**### NPC**
+### NPC
 
 Enter the NPC model in **NPC Model**.
 
@@ -84,7 +84,7 @@ Then stand where you want the NPC/buy spot and click **Coords for buy**.
 
 The position will be taken from where you are standing.
 
-**### Blip**
+### Blip
 
 Enable **Ranch Blip** and set:
 
@@ -92,7 +92,7 @@ Enable **Ranch Blip** and set:
 - Blip Sprite
 - Blip Color
 
-**### Payment**
+### Payment
 
 Set:
 
@@ -101,7 +101,7 @@ Set:
 
 Enable **Gold pricing** if the ranch should use gold.
 
-**## Animal Positions**
+## Animal Positions
 
 The Creator supports:
 
@@ -128,7 +128,7 @@ You can add multiple positions for each animal type.
 
 Click an existing position to remove it.
 
-**## Troughs**
+## Troughs
 
 Each animal has its own trough position.
 
@@ -145,7 +145,7 @@ Horse trough
 
 The current position and heading will be inserted automatically.
 
-**## Preview**
+## Preview
 
 While configuring a ranch, the Creator shows the configured positions in the world:
 
@@ -160,7 +160,7 @@ Lead Cancel
 
 This makes it easy to check everything before saving.
 
-**## Saving**
+## Saving
 
 When everything is ready, click:
 
@@ -170,7 +170,7 @@ Create/Save Ranch
 
 New ranches automatically receive their own `key`.
 
-**## Editing / Deleting**
+## Editing / Deleting
 
 Select an existing ranch from the list.
 
@@ -186,7 +186,7 @@ To remove it:
 Delete Ranch
 ```
 
-**## Modify Ranch**
+## Modify Ranch
 
 **Modify Ranch** is used to edit the actual ranch data.
 
@@ -200,7 +200,7 @@ You can modify:
 
 You can also add or delete animals directly from this menu.
 
-**### Notes:**
+### Notes:
 
 - **All coordinate buttons use your current position** — including the ranch center, buy/NPC spot, animal positions and troughs.
 

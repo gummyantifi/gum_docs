@@ -1,4 +1,4 @@
-## Manual Crafting Configuration
+# Manual Crafting Configuration
 
 If you don't want to use **craftingHelper**, you can manually create crafting books and recipes directly inside your configuration.
 

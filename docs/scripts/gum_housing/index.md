@@ -1,5 +1,5 @@
 
-## gum_housing 
+# GUM Housing: install and configure
 
 ### 📌 Initial Installation & Configuration  
 

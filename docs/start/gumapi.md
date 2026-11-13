@@ -1,4 +1,8 @@
-## 📌 What is **gumApi**?  
+# Install gumApi
+
+Always install gumApi before any GUM script. Download the current version from the **gumapi-and-docs** channel in the GUM Scripts Discord: [open the download post](https://discord.com/channels/870659641879724104/1048999455157919744/1341408039324090388).
+
+## What is gumApi?
 
 gumApi acts as a **bridge** between your scripts and the framework. Instead of using different script versions for various frameworks, you only need **gumApi**.  
 This ensures that scripts run smoothly across a wide range of frameworks.  
@@ -27,6 +31,8 @@ This way, the framework loads first, gumApi retrieves the necessary data, and th
 ---
 
 ## 🛠️ **Configuration**  
+
+> **Changed on 2026-10-20.** The gumApi update of 2026-10-20 removed this step: gumApi no longer needs a framework selected, you start it and it works. The framework setting below applies only to gumApi versions older than that.
 
 Before using scripts, you need to configure **gumApi**.  
 
