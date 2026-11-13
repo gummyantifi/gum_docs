@@ -65,86 +65,185 @@ GUM Ecology is a wildlife and nature system for RedM. It handles plant spawning 
 
 Install **gumApi** first and place it between your framework and the script in your resource order. See [Install gumApi](../start/gumapi.md).
 
-- GUM Horses integration is optional.
+- The resource depends on `gumApi` and `oxmysql`. Both must start before `gum_ecology`.
+- GUM Horses integration is optional. It is used for the wild horse taming count in the atlas.
 - If you are moving from the old version of GUM Ecology to the 2026-11-02 version, there is no converter. Open a ticket and send your files, and the developer can convert them for you.
 
-## Configuration notes
+## Install
 
-### Discord webhook
+1. Add the atlas item to your items. The default name is `Ecology_Book` (`Config.Atlas.item` in `configs/configAtlas.lua`). The script registers it as a usable item through gumApi. Using it opens the Field Atlas.
+2. Make sure every reward item named in `configs/configHerbs.lua` and `configs/configAnimals.lua` exists in your items.
+3. Start the resource after `gumApi` and `oxmysql`.
 
-Added 2025-02-25:
+There is no SQL file to import. With `Config.Atlas.persistence.enabled = true`, the script creates two tables on start: `gum_ecology_atlas_plants` and `gum_ecology_atlas_animals`. The prefix comes from `Config.Atlas.persistence.table`. Each table holds one row per character and species.
+
+Plant positions, remaining harvests, and respawn times are not stored in SQL. They are saved in the resource's KVP storage when `Config.Spawning.persistence = true`.
+
+## Configuration
+
+All config files are in the `configs/` folder and are not escrowed.
+
+### `configs/configMain.lua`
+
+- `Config.Debug` and `Config.DebugPrints`: test login, debug markers, and console output. Check that `Config.Debug` is `false` on a live server.
+- `Config.adminRole`: the gumApi group allowed to use the admin commands. Default `'admin'`.
+- `Config.clearCacheCommand` and `Config.resetAtlasCommand`: the admin command names. Set either to `false` to disable it.
+- `Config.KeyMapping`: registers the prompt keys as key mappings, with `prefix` as the label prefix.
+- `Config.Interaction`: `newPrompt` switches between NUI prompts (`true`) and native prompts (`false`). `useTarget` hands interaction to an external target system. The other keys are pickup radii and the server-side distance and cooldown checks.
+- `Config.AnimalSettings`: `autoGather` rewards native animal looting. `removeAfterGather` deletes the animal after it is processed.
+- `Config.Blips`: `activeHerbs` puts a blip on every generated plant position. `spawnAreas` shows the configured spawn areas. `sprite` is the blip sprite.
+
+### `configs/configSpawning.lua`
+
+`Config.Spawning` holds the global spawn rules:
+
+- `railway`: keeps plants away from rails (`enabled`, `distance`, `height`).
+- `minDistance`: minimum distance between active plants.
+- `persistence`: saves positions, remaining harvests, and respawn times across restarts.
+- `defaults`: the rules every plant uses unless it overrides them. Keys: `limit`, `maxTotal`, `respawnMinutes` (default `{20, 40}`, in real minutes), `cluster`, `avoidPlayerDistance`, `hours`, `weather`, and `terrain` (`maxSlope`, `maxHeightDifference`, `water`, `maxWaterDepth`).
+
+To override the defaults for one plant, put a `spawn` table inside its `Config.Herbs` entry. It can also carry per-area overrides:
 
 ```lua
-Config.discordWebhook = {
+spawn = {limit = 8, maxTotal = 20, hours = {from = 18, to = 6},
+    respawnMinutes = {15, 30}, cluster = {min = 2, max = 4, radius = 5},
+    weather = {allow = {"RAIN", "DRIZZLE", "MISTY"}},
+    areas = {[1] = {limit = 4}, [2] = {limit = 10, hours = false, weather = false}}}
+```
+
+`hours` also hides and shows existing plants. `weather` only controls new spawns.
+
+### `configs/configHerbs.lua`
+
+`Config.Herbs` is keyed by the prop model name. Each entry has:
+
+- `coords`: the spawn areas, each as `{x, y, z, radius}`.
+- `maxSpawn`: how many positions are generated per area (used when `spawn.limit` is `false`).
+- `canGatherMore`: how many times one plant can be picked.
+- `grounded`: lowers the prop into the ground.
+- `items` and `randomized`: the rewards (see below).
+- `blipSprite`, `blipName`, `animDict`, `animPart`, `animDur`.
+- `spawn`: optional spawn overrides.
+- `atlas`: the Field Atlas entry (see below).
+
+### `configs/configAnimals.lua` and `configs/configHorses.lua`
+
+`Config.Animals` and `Config.WildHorses` are keyed by `GetHashKey("model")`. Each entry has an `atlas` table, and animals also have `items` and `randomized`.
+
+### Rewards
+
+A reward row is `{"item_name", amount, "Label", chance}`:
+
+```lua
+items = {{"Gamey_Meat", 3, "Prime Meat", 100}, {"Fang", {1, 2}, "Animal Tooth", 50}}
+```
+
+- `amount` is a number, or `{min, max}` for a random amount.
+- `chance` is a percentage. It defaults to 100 when left out.
+- With `randomized = true`, the script picks one row from the list, then rolls its chance.
+
+If the player cannot carry the reward, the harvest is not used up.
+
+### Atlas entries
+
+Every plant, animal, and wild horse entry has an `atlas` table:
+
+- `enabled`: `false` hides the entry and disables its discovery. Gathering still works.
+- `name`, `description`, `habitat`, `notes`, `observations`: the texts shown in the atlas.
+- `illustrations`: which methods unlock the picture for this entry (`study`, `binoculars`, `camera`).
+- `discovery`: `stage1` to `stage5`. Each stage has `requirements` (`inspect`, `binoculars`, `gather`, `photograph`, `tame`), `match` (`"any"` or `"all"`), and `reveal` (which texts the stage unlocks).
+- `discovery.photographState` (animals and horses): `"alive"`, `"dead"`, or `"either"`.
+
+Stages unlock in order. Requirement counts are cumulative totals per action, not extra counts per stage.
+
+### `configs/configAtlas.lua`
+
+- `Config.Atlas.enabled`: turns the atlas on or off.
+- `revealAllForPreview`: shows every entry as complete without saving discoveries. Set it to `false` for normal play.
+- `item` and `command`: how players open the atlas. Defaults are `"Ecology_Book"` and `"ecologybook"`. Set either to `false` to disable it.
+- `illustrations`: the global picture rules, the built-in `camera` settings, and the binocular distance. The config notes that you should not run the gum_camera controls together with the built-in camera.
+- `study`: plant study radius, and the binocular distance and duration for animals.
+- `persistence`: `enabled` and the `table` prefix.
+- `journal`: location history, weather recording, personal notes, and counters. `trackHorseTaming` counts successful GUM Horses taming.
+- `ui`: the atlas title and subtitle.
+
+### `configs/configPerformance.lua`
+
+`Config.Performance` holds render distances, check intervals, sync limits, and debug markers. The plant render distance is `renderRadius` (default `150`, in metres).
+
+### `configs/configServer.lua`
+
+The Discord webhook is server-side only:
+
+```lua
+ConfigSrv.discordWebhook = {
     enable = true,
     url = "",
     color = 16755884,
     language = {
-        playerGet = "Player get : ",
+        playerGet = "Nature activity",
+        plantHarvest = "Plant harvested",
+        animalProcess = "Animal processed",
     },
 }
 ```
 
-### Render radius
+### `configs/configLanguage.lua`
 
-Added 2025-08-10. The changelog notes that this line needs to be added to your config:
+`Config.Language` holds every text, plus the control hash for each prompt (for example `takeHerb = {0x27D1C284, 'Take herb'}`).
 
-```lua
-Config.RenderRadius = 80
-```
+## Commands
 
-### Herb blips
+| Command | Who | What it does |
+| --- | --- | --- |
+| `/ecologybook` | Everyone | Opens the Field Atlas. Name set by `Config.Atlas.command`. |
+| `/ecologyclearcache` | `Config.adminRole` or server console | Clears saved plant positions and the terrain cache, then starts a new generation. Name set by `Config.clearCacheCommand`. |
+| `/ecologyreset [player ID]` | `Config.adminRole` or server console | Resets atlas progress for an online player. Without an ID it resets your own character. Name set by `Config.resetAtlasCommand`. |
 
-Added 2025-10-06:
+## Events for connecting other scripts
 
-```lua
-Config.blipSetting = {
-    blipOnHerbs = true,--Every herb have blip
-    blipsOnRadius = false--Radius on location where are herbs
-}
-```
+You can hook another script, such as an XP or battle pass system, into GUM Ecology without editing it. Register the same event in an open server script of your own. When the event is triggered, your handler runs as well.
 
-### Removing processed animals
+- `gum_ecology:animalAction` (server side): a player processed an animal. Arguments: `model, position, observation, reference`.
+- `gum_ecology:herbAction` (server side): a player picked a plant. Arguments: `_, model, key, position, observation`.
+- `gum_ecology:gatherAnimal` (client side): starts the skinning action on the animal the player is looking at. Use the server-side events for rewards.
 
-The option `AnimalGatherRemove` is named in the changelog. A problem with it was resolved in the client on 2025-03-10.
+Your handler receives the request as the client sent it. GUM Ecology's own distance, cooldown, and inventory checks run in its own handler, so do your own checks if the reward matters.
 
-### Events for connecting other scripts
-
-In a support ticket from March 2026 (before the 2026-11-02 update), the developer gave these events for hooking another script, such as an XP or battle pass system, into GUM Ecology:
-
-- `gum_ecology:animalAction` (server side): fires after a player gathers an animal and the reward is called.
-- `gum_ecology:herbAction` (server side): the same for herbs.
-- `gum_ecology:gatherAnimal` (client side): the developer recommends the server-side event over this one, because the client-side event is connected to a slightly different system.
-
-You do not need to edit GUM Ecology to use them. Register the event in any open server script of your own. When GUM Ecology triggers the event, your handler runs as well.
-
-The developer's example gives a different XP amount per animal after skinning. `exports:bpXXXX` is a placeholder for the export of your own XP or battle pass script:
+This example gives a different XP amount per animal:
 
 ```lua
 local animals = {
     [GetHashKey('a_c_cedarwaxwing_01')] = 10,
     [GetHashKey('a_c_chicken_01')] = 15,
 }
-RegisterServerEvent('gum_ecology:animalAction', function(configData, model)
-    if animals[model] then
-       -- animals[model] 
-        exports:bpXXXX(source, 'hunting', animals[model])
+RegisterServerEvent('gum_ecology:animalAction', function(model)
+    local xp = animals[tonumber(model)]
+    if xp then
+        -- call the export of your own XP or battle pass script here,
+        -- with source and xp
     end
 end)
 ```
 
-Here `animals[model]` is the amount of XP the player receives for that animal. The developer also confirmed that the table can hold more than a number per animal, for example an XP amount and a category.
+The table can hold more than a number per animal, for example an XP amount and a category.
 
-## Recent changes
+An older version of this page showed the handler as `function(configData, model)`. In the current code the first argument of `gum_ecology:animalAction` is the model.
 
-- **2026-11-02:** Major update. Added the Field Atlas with discovery stages, binocular observation, the built-in camera, illustrations, and per-character progress. Reworked spawning with time-based spawning, terrain validation, spawn restrictions, weather conditions, per-plant and per-area rules, and spawn positions and respawn timers that persist across resource restarts. Spawn validation, terrain caching, and synchronization were optimized. There is no converter from the old version: open a ticket to have your files converted.
-- **2026-06-03:** The script was adapted so herbs can be disabled. Client and server files changed.
-- **2025-11-04:** A few fixes from the developer's own play testing.
-- **2025-10-06:** Added `Config.blipSetting` for herb blips. Client files changed.
-- **2025-09-22:** Herb generation on the map was rewritten, and herb handling was adjusted on both server and client.
-- **2025-08-10:** Added `Config.RenderRadius`. Add the line to your config. `client.lua` changed.
-- **2025-03-10:** Resolved the `AnimalGatherRemove` option. Client files changed.
-- **2025-02-25:** Added the Discord webhook (`Config.discordWebhook`) and increased the pickup range for custom herbs. `client.lua` and `server.lua` changed.
-- **2025-01-26:** Updated how information is managed between server and client, which should fix some issues with flowers.
+## Customers also ran into these
 
-*This page was built from the script's announcement, its changelog, and resolved support tickets. For anything not covered here, open a ticket in the GUM Scripts Discord.*
+### The Discord webhook settings are missing from the config
+
+They moved. The old `Config.discordWebhook` is now `ConfigSrv.discordWebhook` in `configs/configServer.lua`.
+
+### `Config.RenderRadius` does nothing
+
+The key was replaced. Set `Config.Performance.renderRadius` in `configs/configPerformance.lua`.
+
+### Herb blip settings are gone
+
+`Config.blipSetting` was replaced by `Config.Blips` in `configs/configMain.lua`, with `activeHerbs` and `spawnAreas`.
+
+### Processed animals are not removed
+
+`AnimalGatherRemove` was replaced by `Config.AnimalSettings.removeAfterGather` in `configs/configMain.lua`. It is `false` by default.

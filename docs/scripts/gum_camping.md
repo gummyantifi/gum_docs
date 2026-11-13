@@ -10,7 +10,7 @@ GUM Camping lets players build their own camp, fill it with props and storage, a
 
 - Video: [GUM Camping](https://www.youtube.com/watch?v=awa_kQq7PXA)
 - Frameworks: announced for VORP and RedEM. A 2024-10-23 update fixed camp prompts for RSG Core.
-- A reworked version of the script was released as a test (beta) version on 2025-03-23. Most changelog entries since then are for that beta version.
+- A reworked version of the script was released as a test (beta) version on 2025-03-23. This page describes the reworked version.
 
 ## What it does
 
@@ -18,7 +18,7 @@ GUM Camping lets players build their own camp, fill it with props and storage, a
 
 - Players can freely choose where to place their camp, or you can require specific camp-building items, with different items representing different camp sizes.
 - Camp size can be set by the building item used, scale with the number of camp members, or use a fixed radius.
-- You can limit the maximum number of structures, storage containers, and other camp objects.
+- You can limit the maximum number of props and storage containers per camp.
 - Edit Mode lets players fine-tune the placement of camp props.
 
 ### Storage
@@ -45,113 +45,105 @@ GUM Camping lets players build their own camp, fill it with props and storage, a
 
 Install **gumApi** first and place it between your framework and the script in your resource order. See [Install gumApi](../start/gumapi.md).
 
-- If you are moving from the old version to the reworked (beta) version, remove the old SQL table and let the script create a new one.
+- The script uses `oxmysql` for its database calls. Start it before `gum_camping`.
+- If you are moving from the old version to the reworked version, remove the old SQL table and let the script create a new one.
 
-## Configuration notes
+## Install
 
-The reworked version overhauled the configuration files to match the newer GUM scripts. The sources name these settings.
+1. There is no SQL file to import. On start the script creates the `camping` table if it does not exist. Each row is one camp, with its centre, owner, shared keys, props, condition, and the Butcher and CraftMaster contents.
+2. Add the build items to your items. Every prop in `cfg/configProps.lua` has an `itemId` (for example `Campenter_1` for the flag and `Campfire_1` to `Campfire_4` for the campfires). The script registers each `itemId` as a usable item. Using the item removes one from the inventory and starts placement.
+3. Add the items used by your Butcher and CraftMaster recipes, and the repair materials in `Config.destroySettings.materialForRepair`.
+4. Start the resource after `gumApi` and `oxmysql`.
+5. Set `debug = false` in `Config.baseSetting` before you go live.
 
-### Camp size and rendering
+## Configuration
 
-- `campSizeRadius`: the maximum allowed camp size radius.
-- `radiusModifier`: increases the building radius in the camp based on the number of distributed keys.
+All config files are in the `cfg/` folder and are not escrowed.
 
-```lua
-    campSizeRadius = 20, -- Maximum allowed camp size radius
-```
+### `cfg/config.lua`
 
-- A render radius can be set in the config, and the visualization distance for props can be adjusted for better performance.
-- You can define a required item for camp construction. Depending on the item type, players build either a small or a large camp.
+`Config.baseSetting`:
 
-### Props
-
-- All props are in a single configuration file, where each prop can have properties such as `isFire` (marks a campfire).
-- `oneTime`: a placement option for a temporary prop that disappears once a certain distance is reached.
-
-### Storage, blips, and damage
-
-- You can define a different number of storage units per camp, assign different storage sizes by storage type, and name each storage.
-- Blip customization settings are available.
-- A damage multiplier is available, including date-based activation and deactivation options.
-
-### Wardrobe
-
-- `Config.ClotheEvent`: the event used to open a player's personal wardrobe. Added 2024-10-23.
+- `debug`: debug prints for setup. Turn it off on a live server.
+- `renderRadius` (default `200`): distance at which camps and placed props are rendered. `tickForRender` is how often the script checks for nearby camps, in milliseconds.
+- `onlyOneCampOwned`: `true` limits each character to one camp.
+- `maxPropPerCamp` (default `50`, `0` is unlimited) and `maxStoragesPerCamp` (default `3`).
+- `openClotheEvent`: the event that opens the player's wardrobe from a wardrobe prop. The first value is the event name. The second is `true` for a client event or `false` for a server event.
 
 ```lua
-Config.ClotheEvent = "gum_clothing:checkOwnedClothe"
+openClotheEvent = {"hobbs:openWardrobeHook", true},
 ```
 
-### Language lines added by updates
+- `commandManage`: the command that opens the camp management menu. Default `camp`.
+- `campSizeRadius` (default `50`): the base camp radius.
+- `radiusModifier.keyIncreaseRange`: extra radius by number of keys given out. The value is added to `campSizeRadius`. Set it to `nil` to disable it.
+- `radiusModifier.needItemForBuild`: `nil` by default. When set, the player must hold one of the listed items to build.
+- `blipSetting`: `everyOneSee` shows camp blips to all players. `blipSprite` is the sprite. `unknownOwner`, `sharedOwner`, and `owner` each hold a blip name and a blip colour modifier.
 
-If you keep your own language file, add these lines when you update.
+`Config.destroySettings`:
 
-Changed 2024-10-17 (config text for entry `[11]`):
+- `enableDestroy`: turns camp decay on.
+- `daysToDecrease` (default `7`) and `damageToDestroy` (default `1`): a new camp starts at condition 100. On each resource start, a camp whose last decay is older than `daysToDecrease` days loses `damageToDestroy` condition. A camp whose condition is below 0 is deleted.
+- `materialForRepair`: the items needed to repair, keyed by item name, each with a `name` (label) and a `count`. The repair cost is the missing condition multiplied by `count` for each item.
 
-```lua
-text = "Fire manipulation",
-```
+`Config.bannedTowns` lists the towns where building is blocked.
 
-Added 2025-09-22:
+`Config.storageRobbery` is marked in the config as a feature still in work. Leave it disabled.
 
-```lua
-    youProcessed = {"You processed : ", 3},
-    youCantProcessLootedAnimal = {"You can't process looted animal.", 3},
-```
+### `cfg/configProps.lua`
 
-Added 2026-03-18 (`configLang`):
+`Config.SpawnProps` is keyed by the prop model. Each prop has:
 
-```lua
-    inputSavePos = {"Do you want to save or cancel edit position?", "Save", "Cancel"},
-    promptRotateMode = "Rotate Mode",
-    promptEditMode = "Edit mode",
-    menuPropEdit = "Edit",
-```
+- `itemId` and `label`.
+- `isFire`: `false`, or the model the prop switches to when the fire is turned on or off.
+- `isEnter`: `true` gives the prop the camp management prompt.
+- `isStorage`: `false`, or a number for the storage capacity.
+- `isClothe`: `true` makes it a wardrobe.
+- `isButcher` and `isCraftmaster`: `false`, or a table with the NPC model, offsets, and heading. A camp can have one of each.
+- `buildTime` (seconds), `cleanGround`, `downward`.
+- `rDistance`: a render distance for this prop. `nil` uses `renderRadius`.
+- `oneTime`: a distance. The prop is placed outside the camp system as a temporary object and disappears when the player moves farther away than this.
 
-## Common problems and fixes
+`Config.MaxPeltInButcher` (default `20`) is the maximum number of entries the Butcher holds.
+
+### `cfg/configButcher.lua`
+
+- `Config.butcherProductEnable`, `Config.butcherStorageSystem`, `Config.butcherProductQue`: turn processing, the Butcher storage, and one-at-a-time processing on or off.
+- `Config.butcherProducts`: keyed by animal model name. `timeForProduct` is counted in steps of about 10 seconds. Each entry in `productItems` is keyed by item name, with `label`, `checkLooted`, `getChance`, `minAmount`, and `maxAmount`.
+
+### `cfg/configCraftmaster.lua`
+
+- `Config.craftmasterProductEnable` and `Config.craftmasterProductQue`.
+- `Config.craftmasterProducts`: a numbered list of recipes. Each has `category`, `timeForProduct`, `requestItems` (item name, `label`, `count`), and `productItems` (item name, `label`, `getChance`, `minAmount`, `maxAmount`).
+
+### `cfg/configPelts.lua`
+
+Lookup tables for the Butcher. It only accepts pelts listed in `Config.Pelts` and animals listed in `Config.Animals`. `Config.LegendaryTypes` maps legendary animal outfits.
+
+### `cfg/configLang.lua`
+
+`Config.Language` holds all notifications, inputs, prompts, and menu texts. Notifications are `{"text", seconds}`.
+
+## Commands
+
+| Command | What it does |
+| --- | --- |
+| `/camp` | Opens the camp management menu. You must stand inside a camp you own or hold a key for. The name is set by `commandManage`. |
+
+## Customers also ran into these
 
 ### A camp disappeared
 
-Camps do not despawn when their owner disconnects. Everything in a camp is saved in the database. Each camp has a condition value, and if the condition runs out and the player does not repair the camp, it is destroyed automatically. Repair the camp before its condition runs out.
+Camps do not despawn when their owner disconnects. Everything in a camp is saved in the `camping` table. Each camp has a condition value. With `Config.destroySettings.enableDestroy = true`, the condition drops over time and the camp is deleted when it runs out. Repair the camp from the camp menu before that happens.
 
-### Camp prompts cannot be used on RSG Core
+### `Config.ClotheEvent` is not in the config
 
-Fixed on 2024-10-23 (`client.lua`).
+The key was replaced in the reworked version. Set `openClotheEvent` in `Config.baseSetting` to your clothing script's event, and set the second value to match whether it is a client or a server event.
 
-### Campfires stopped working after the optimization update
+### Language lines are missing after an update
 
-Fixed on 2024-12-05 (`client.lua`), along with other settings that prevented the use of items.
-
-### `oneTime` props are visible only to the player who placed them
-
-Fixed on 2025-06-22 (client).
+If you keep your own `cfg/configLang.lua`, compare it with the shipped file after each update. Lines added by past updates include `youProcessed`, `youCantProcessLootedAnimal`, `inputSavePos`, `promptRotateMode`, `promptEditMode`, and `menuPropEdit`.
 
 ### The butcher does not process animals correctly
 
-A bug with starting animal processing was fixed on 2025-09-22. The butcher processing was then completely rewritten on 2025-09-25 and should work in almost all settings. Update the client and server files, and add the two language lines from 2025-09-22.
-
-### The configured values for destroying a camp are not applied
-
-Fixed on 2026-03-18 (client, server, and js files).
-
-### A camp is deleted when a prop is picked up and it is not the last one
-
-Fixed on 2025-03-25 (client and server).
-
-## Recent changes
-
-- 2026-11-01: Version v1.0.2. The server now checks that `damage` is a numeric value before processing it, and entries with no damage or negative damage are removed automatically. Replace `server.lua`.
-- 2026-03-18 (beta): Added an edit mode to the management of placed items. Fixed the configured camp destroy values not being applied. Four new `configLang` lines.
-- 2026-01-05 (beta): Added a short delay between the "near camp" notification and giving the item back.
-- 2025-09-25 (beta): Butcher processing completely rewritten.
-- 2025-09-22 (beta): Fixed a bug with starting animal processing. New notifications `youProcessed` and `youCantProcessLootedAnimal`.
-- 2025-06-22 (beta): `oneTime` items are now visible to other players, not only the owner.
-- 2025-05-13 (beta): Fixed occasional error messages and several server-side bugs, adjusted item recalculation during crafting, changed the condition for creating a campfire, and updated object ID generation to prevent ID merge issues.
-- 2025-03-25 (beta): Fixed a camp being deleted when a prop that was not the last one was picked up. Fixed some blip settings.
-- 2025-03-24 (beta): Fixed blip visibility when the setting for all players to see camp blips is disabled.
-- 2025-03-23 (beta): Test version of the reworked script released. New menu and configuration files, camp size based on the number of keys, required build items for small or large camps, blip customization, a damage multiplier, multiple named storages per camp, a single props configuration file, a craftsman and a butcher, `oneTime` placement, and a prop visualization distance. Requires removing the old SQL table and letting the script create a new one.
-- 2024-12-05: Fixed non-functional fires after the optimization update.
-- 2024-10-23: Added `Config.ClotheEvent`. Fixed camp prompts on RSG Core.
-- 2024-10-17: Config text for entry `[11]` changed to "Fire manipulation". Client-side prompt functions optimized to reduce the load on gumApi.
-
-*This page was built from the script's announcement, its changelog, and resolved support tickets. For anything not covered here, open a ticket in the GUM Scripts Discord.*
+Butcher processing was rewritten in the reworked version. Update the client and server files, and make sure `youProcessed` and `youCantProcessLootedAnimal` exist in your `cfg/configLang.lua`.

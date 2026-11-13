@@ -10,6 +10,7 @@ GUM Farming is a configurable farming system for RedM. It covers everything from
 
 - Video: [GUM Farming](https://www.youtube.com/watch?v=D-Vquyp07LQ)
 - Current version: 1.0.8 (2026-11-02). The rewritten farming left beta and became the official release with v1.0.7 on 2026-11-01.
+- Resource folder: `gum_farms`. This page describes the rewritten version. The old `gum_farming` resource used different config files and tables.
 - Frameworks: GUM support has confirmed it is compatible with RSG.
 
 ## What it does
@@ -72,12 +73,30 @@ GUM Farming is a configurable farming system for RedM. It covers everything from
 - Open world: planting outside dedicated farms with configurable crop restrictions.
 - Hybrid: different mechanics for ordinary players and farming professions.
 
-## Before you install
+## What the script needs
 
-Install **gumApi** first and place it between your framework and the script in your resource order. See [Install gumApi](../start/gumapi.md).
+- gumApi. It is declared as a dependency in `fxmanifest.lua`. Install it first and place it between your framework and the script in your resource order. See [Install gumApi](../start/gumapi.md).
+- An updated gumApi. With `Config.interaction.newPrompt = true` (the default), the script calls gumApi's new prompt exports. Version 1.0.5 and later need the updated gumApi, so update gumApi when you update farming.
+- oxmysql. Farm data is read and written through `exports.oxmysql`.
+- Optional: `gum_skills` (the `fastRake` and `moreItems` skill points and harvest experience under the `gum_farming` skill), `gum_houses` (house farm plots and their permissions), `gum_target` (targeting water pumps), and `gum_ranch` (filling ranch troughs from a filled bucket). Each one is only used when it is running.
 
-- Version 1.0.5 and later need an updated gumApi. Update gumApi when you update farming.
-- Filling the water cart needs GUM Stables connected to farming.
+## Install
+
+1. Put the `gum_farms` folder in your resources and start it after gumApi and oxmysql. Keep the folder name `gum_farms`. GUM Ranch looks for a resource with that name.
+2. You do not need to import SQL. On start, the script creates the table named in `Config.database.table` (default `gum_farms`) and a second table with the suffix `_helpers` (default `gum_farms_helpers`) for scarecrows, workers, and supply stations.
+3. Add the items the config uses to your items:
+
+| Used for | Config key | Stock item IDs |
+| --- | --- | --- |
+| Hoe | `Config.planting.hoeItem` | `hoe` |
+| Seeds | `seedItem` of each crop in `Config.plants` | `Hop_Seed`, `Wild_Carrot_Seed`, `Tea_Leaves_Seed`, and one per crop |
+| Harvest | `harvest.item` of each crop | `Hop`, `Wild_Carrot`, `Tea_Leaves`, and one per crop |
+| Water | `Config.care.water.sources` | `Clean_Water_Bottle` |
+| Fertilizer | `Config.care.fertilizer.sources` | `Fertilizer`, `Big_Fertilizer`, `Compost` |
+| Water tools | `Config.waterTools.tools` | `Watering_Can`, `Teapot_Can` |
+| Helpers | `Config.helpers.scarecrow.item`, `Config.helpers.worker.item`, `Config.helpers.station.item` | `scarecrow`, `Farm_Worker`, `Farm_Supply_Station` |
+
+The script registers the hoe, every seed, the water tools, and the helper items as usable items. A harvest item is registered as usable when its crop has `herbToSeed.enabled = true` or a `herbToSeed.useEvent`.
 
 ### Upgrading from the old gum_farming
 
@@ -86,166 +105,135 @@ The version released on 2026-10-26 uses new config files and a new SQL table. Th
 1. Back up your original `gum_farming` resource and your database.
 2. Place the original resource, including its configuration files, in `old scripts/gum_farming/` next to `GumConverter.exe`. Add SQL dumps of `farming`, `farmingdata`, and `farmingdatafree` if you use them.
 3. Run the converter and select `gum_farming → gum_farm`.
-4. Under **New scripts CFGs**, select the new resource's configurations. Keep automatic SQL detection enabled. Leave **Target SQL table** as `gum_farms` unless your new resource uses another name.
+4. Under **New scripts CFGs**, select the new resource's configurations. Keep automatic SQL detection enabled. Leave **Target SQL table** as `gum_farms` unless you changed `Config.database.table`.
 5. Click **Convert configs + SQL**. The results appear in `converted/gum_farm/`.
 6. Stop the old farming resource, start the new one, and check plants, farms, ownership, and helpers.
 
 The converter does not modify your database automatically. Without an SQL dump it converts configurations only, and saved progress is not carried over.
 
-The developer recommends starting from the full folder downloaded from the portal and replacing only the config files the converter produced. The script's readme also describes the conversion.
+The developer recommends starting from the full folder downloaded from the portal and replacing only the config files the converter produced.
 
-## Configuration notes
+Keys from the old config are not read by the new version. `growTime`, `updateTime`, `potStageProps`, `bucketItemId`, `wateringCanId`, `Config.PumpModel`, `disableHoe`, `Config.CanDestroyJobs`, and `Config.KeySetting` are gone. `weatherAffect` still exists, now under `growth` of each crop in `configs/configPlants.lua`. The current keys are described under "Config files" below.
 
-### Version 1.0.x
+## Config files
 
-- `destroyDeadPlants` and `destroyDeadTrees` in `configs/configMain.lua` (added 2026-10-30, v1.0.5):
+All config files are in the `configs` folder. Restart the resource after changing them.
 
-```lua
-        destroyDeadPlants = true, -- Remove non-tree plants when quality AND condition reach 0.
-        destroyDeadTrees = false, -- Also remove tree plants when quality AND condition reach 0.
-```
+### `configs/configMain.lua`
 
-- New translation lines for the grid size prompts (added 2026-10-30, v1.0.5). In `configs/configLanguage.lua`:
+The `Config` table with the general settings:
 
-```lua
-        gridSmaller = {'Grid size', 'MOUSE_WHEEL_DOWN'},
-        gridLarger = {'Grid size', 'MOUSE_WHEEL_UP'},
-```
+- `Config.KeyMapping`: `enabled` and `prefix` (default `'GUM Farms'`).
+- `Config.planting`: `mode` (`'farms'`, `'anywhere'`, or `'perPlant'`, default `'perPlant'`), `maxPlantsPerPlayer` for open-world planting (default `5`), `jobWorkSpeed` per job, `hoeItem`, `startPoint` (`'mark'`, `'prepare'`, or `'plant'`), `useSeed`, and `grid` (sizes, `spacing`, `attach`).
+- `Config.interaction`: `newPrompt`, interaction distances, `minimumPlantSpacing`, the plant marker, the grid preview, and the land point visuals.
+- `Config.features`: `interactions` turns each action on or off (`destroyLandPoint`, `plant`, `water`, `fertilize`, `procure`, `pestControl`, `harvest`, `destroy`). `statusDisplay` sets the status `mode` (`'3dText'`, `'prompt'`, or `'nui'`) and which fields are shown.
+- `Config.ui.plantStatus`: the farm and plant status panels.
+- `Config.care`: `procure`, `pestControl`, `water`, and `fertilizer`. Each has a `mode` (`'plant'` or `'radius'`, plus `'farm'` for water and fertilizer) and a `radius`. `water.sources` and `fertilizer.sources` list the items, how many are used, and how many points they add.
+- `Config.waterTools`: carried water tools and pumps.
+- `Config.weather`: rain watering (`enabled`, `waterPerMinute`, `affectFarmSupply`).
+- `Config.status`: dead plant removal, `pests`, `procure` (condition), and `quality`.
+- `Config.harvest`: `mode` (`'plant'` or `'radius'`), `radius`, `maxPlantsPerAction`.
+- `Config.seedProcessing.maxItemsPerAction`: how many harvested items can be turned into seeds at once.
+- `Config.helpers`: `scarecrow`, `worker`, and `station`.
+- `Config.animations`: animations and durations per action.
 
-In `configs/configLanguageCZ.lua`:
+Settings that tickets asked about most:
 
-```lua
-        gridSmaller = {'Velikost mřížky', 'MOUSE_WHEEL_DOWN'},
-        gridLarger = {'Velikost mřížky', 'MOUSE_WHEEL_UP'},
-```
-
-### Settings announced before the 2026-10-26 rewrite
-
-These were announced for the config of the version before 2026-10-26. The new version has its own config files, so confirm a key exists in your config before relying on it.
-
-**Growth**
-
-- `growTime` sets how long a crop takes to grow, and `updateTime` determines how often growth ticks. To shorten growth, lower `growTime` on the crop. The developer's example:
+- Planting without a hoe: `Config.planting.useSeed.requireHoe = false` (the default) lets players plant from a seed without a hoe. `Config.planting.startPoint = 'plant'` skips marking and preparing soil.
+- Water tools: each entry in `Config.waterTools.tools` sets the prop `model`, `capacity` (pours per fill), `amount` (water points), and `radius` (watering range in meters).
 
 ```lua
-potStageProps = {
-    [1] = {"s_inv_milkweed01bx", 51, 0.0}, 
-    [2] = {"s_inv_milkweed01cx", 40, 0.0}, 
-    [3] = {"s_inv_milkweed01x", 30, 0.0}, 
-    [4] = {"s_milkweed01x", 1, 0.0}, 
-}, 
-weatherAffect = true,
-growTime = 50,
+tools = {
+    Watering_Can = {model = 'p_bucket03x', capacity = 2, amount = 100, radius = 4.0, handOffset = {0.0, 0.0, 0.0}},
+    Teapot_Can = {model = 'p_wateringcan01x', capacity = 2, amount = 100, radius = 4.0, handOffset = {0.0, 0.12, 0.08}},
+},
 ```
 
-- `weatherAffect`, placed under `locationTempAffect` (added 2025-08-10). It lets you turn off watering by rainy weather:
+- Pumps: `Config.waterTools.pumpModels` lists the pump prop models (default `{'p_waterpump01x'}`). Leave `pumpLocations` empty to allow any matching pump.
+- Dead plants: `destroyDeadPlants` and `destroyDeadTrees` are in `Config.status`.
 
 ```lua
-weatherAffect = true, -- If true, weather affects growth (watering during rainy weather)
+status = {
+    destroyDeadPlants = true, -- Remove non-tree plants when quality AND condition reach 0.
+    destroyDeadTrees = false, -- Also remove tree plants when quality AND condition reach 0.
 ```
 
-**Watering**
+### `configs/configPlants.lua`
 
-- `bucketItemId` and `wateringCanId` gained a fourth value, the splash radius (added 2025-12-01). Watering then waters the plants within that radius:
+`Config.plants` holds one table per crop. The stock file has 43 crops. Each crop has:
+
+- `label`, `statusHud`, `seedItem`, `allowedFarms` (`'all'` or a list of farm names).
+- `planting.mode` (`'farms'`, `'anywhere'`, or `'both'`, used when the main mode is `'perPlant'`) and `planting.maxPlantsPerPlayer`.
+- `initial`: starting `water`, `fertilizer`, `pests`, `procure`, `quality`.
+- `growth`: `minutes` to mature, `waterUsePerMinute`, `fertilizerUsePerMinute`, and `weatherAffect`.
+- `harvest`: `item`, `min`, `max`, the `animation`, and `bonuses` per stat.
+- `isTree` and `tree` (`harvestsPerGrowth`, `fruitGrowMinutes`) for trees that regrow fruit.
+- `herbToSeed`: `enabled`, `count` (seeds per harvested item), and an optional `useEvent`.
+- `stages`: a list of `{growth, model, groundOffset}`.
+
+To shorten growth, lower `growth.minutes` on the crop. To stop rain from watering one crop, set its `growth.weatherAffect = false`. To stop rain watering for every crop, set `Config.weather.enabled = false` in `configs/configMain.lua`.
 
 ```lua
-bucketItemId = {"Watering_Can", 4, 100, 1}, -- Item | Capacity | How much water per herb | Splash radius
-wateringCanId = {"Teapot_Can", 16, 100, 3}, -- Item | Capacity | How much water per herb | Splash radius
+growth = {
+    minutes = 90,
+    waterUsePerMinute = 1,
+    fertilizerUsePerMinute = 0.35,
+    weatherAffect = true,
+},
 ```
 
-- `Config.PumpModel = "p_waterpump01x",` (added 2025-08-04).
+### `configs/configFarms.lua`
 
-**Planting and destroying**
+- `Config.farms`: one entry per farm. A farm has `enabled`, `maxPlants`, `access`, and either a `polygon` (a list of `{x, y, z}` points) or a `center` with a `radius`. Optional keys are `label`, `clearZone`, `verticalTolerance`, `jobs`, `permissionsWithoutJob`, and a `worker` override.
+- `access` can be `'free'`, `'shared'`, `'owner'`, or `'job'`. With `'job'`, the player's job must be in `jobs`. `permissionsWithoutJob` then allows single actions for everyone else, for example `{water = true, fertilize = true}`.
+- `Config.farms._anywhere` holds the open-world settings and has no polygon.
+- `Config.CleanZones`: extra vegetation cleanup spheres outside farm polygons.
 
-- `disableHoe = true` in `Config.plantSetting` (added 2024-11-30) allows planting without needing a hoe.
-- `Config.CanDestroyJobs` (added 2024-11-11) lists the jobs that are allowed to destroy plants:
+Workers are for job farms only.
+
+### `configs/configLanguage.lua`
+
+`Config.Language` with the texts and, in `promptKeys`, the label and key of each prompt:
 
 ```lua
-Config.CanDestroyJobs = {
-    ["Sheriff_VL"] = true,
-}
+promptKeys = {
+    markLand = {'Mark soil', 'MOUSE_LEFT'},
+    gridSmaller = {'Grid size', 'MOUSE_WHEEL_DOWN'},
+    gridLarger = {'Grid size', 'MOUSE_WHEEL_UP'},
+    water = {'Water', 'F'},
+    harvest = {'Harvest', 'E'},
 ```
 
-**Rewards**
+The keys for water tools are in `Config.waterTools.keys` in `configs/configMain.lua` (`place`, `fill`, `take`, `pourFarm`).
 
-- A single plant can give multiple reward types (added 2026-04-04). Existing single-reward setups keep working. Example:
+### `configs/configPerformance.lua`
 
-```lua
-            [80] = {
-                {"Hop", 5},
-                {"Hop_Leaves", 5}
-            },
-```
+- `Config.performance`: render distances and refresh intervals.
+- `Config.synchronization`: network batching.
+- `Config.database`: `table` (default `'gum_farms'`), `updateIntervalSeconds` (growth update, default `60`), `saveIntervalSeconds` (default `900`), and the save batch settings.
 
-**Keys**
+### `configs/configDebug.lua`
 
-- `Config.KeySetting` (added 2026-06-23) sets the key for each farming action:
+`Config.Debug`: `Login`, `Client`, `Server`, `JS`, `DrawTexts`, `DrawTextRadius`. With `Client = true` and `Config.performance.debugPolygons.enabled = true`, farm boundaries are drawn in the world.
 
-```lua
-Config.KeySetting = {
-    cancelLand = 0x156F7119,
-    markLand = 0x07B8BEAF,
-    prepareLand = 0x2CD5343E,
-    harvest = 0x2CD5343E,
-    fertilize = 0x05CA7C52,
-    procure = 0x20190AB4,
-    water = 0xC97792B7,
-    jerks = 0x6319DB71,
-    destroy = 0x156F7119,
-    takeWater = 0x07B8BEAF,
-    pickScare = 0x07B8BEAF,
-    fillBucket = 0x07B8BEAF,
-    placeBucket = 0x07B8BEAF,
-    takeBucket = 0x07B8BEAF,
-    takeWaterFromCart = 0x07B8BEAF,
-    giveWaterToCart = 0x2CD5343E,
-}
-```
-
-## Common problems and fixes
+## Customers also ran into these
 
 ### Console error: attempt to call a nil value (field 'registerItem')
 
-Cause: gumApi is not installed, so farming cannot find the function it calls.
+Cause: gumApi is not installed or did not start first, so farming cannot find the function it calls.
 
 Fix: download and install gumApi, and start it before farming.
 
 ### After converting: attempt to index a nil value (field 'Config') and "could not find client_script `cfg/config.lua`"
 
-The console also warns about `cfg/configHerbs.lua` and `cfg/configSrv.lua`.
+The console also warns about `cfg/configHerbs.lua`.
 
-Cause: the resource is not seeing the new config files. The warnings show the `fxmanifest.lua` in use referencing `cfg/` files that are not in the resource.
+Cause: the `fxmanifest.lua` in use is the old one. The old resource loads `cfg/config.lua` and `cfg/configHerbs.lua`. The new resource has no `cfg` folder. Its `fxmanifest.lua` loads six files from `configs/` (`configMain.lua`, `configPerformance.lua`, `configDebug.lua`, `configPlants.lua`, `configFarms.lua`, `configLanguage.lua`).
 
-Fix: use the full folder from the portal and keep the resource name it has there. Run the converter, then replace only the config files with the converted ones. Run a refresh and restart the resource so the server picks up the new files.
+Fix: use the full `gum_farms` folder from the portal. Run the converter, then replace only the files in `configs/` with the converted ones. Do not copy the old `fxmanifest.lua` or the old `cfg` folder into it. Run a refresh and restart the resource.
 
 ### The config files in the beta download look encrypted
 
 Cause: the default config files in the first beta upload were encrypted. They were reuploaded on 2026-10-27 so they can be edited.
 
 Fix: download the files again from the portal and check the new configs. If you had already converted your old config, run the conversion again against the fresh files.
-
-### The cart has no option to fill with water
-
-Cause: filling the water cart depends on GUM Stables.
-
-Fix: connect GUM Stables to farming.
-
-## Recent changes
-
-- 2026-11-02 (v1.0.8): Minor adjustments to the game loading process. Replace `fxmanifest.lua` and `server/loginGate.lua`.
-- 2026-11-01 (v1.0.7): Farming moved from beta to official release.
-- 2026-10-30 (v1.0.5): Requires a gumApi update. Adds key mapping for prompts, circular grid shapes with improved marker handling, and separate handling for destroying tree and non-tree plants. Add `destroyDeadPlants` and `destroyDeadTrees` to `configs/configMain.lua`, and `gridSmaller` and `gridLarger` to `configs/configLanguage.lua` and `configs/configLanguageCZ.lua`. Replace `fxmanifest.lua`, `server/main.lua`, `client/prompts.lua`, `client/promptKeymapping.lua`, and `client/main.lua`.
-- 2026-10-27 (beta): Config files reuploaded so they can be accessed.
-- 2026-10-26: New version released as a beta on the portal, with the grid system, optional farming stages, radius-based actions, shared farm resources, workers that harvest, and farm statistics. Existing setups need the converter (see "Upgrading from the old gum_farming").
-- 2026-07-04: Fixed the change between stages 1, 2, 3, and 4.
-- 2026-06-23: Added `Config.KeySetting` for configuring keys.
-- 2026-04-04: One plant can give multiple reward types. Existing setups keep working.
-- 2026-01-04: Fixed the watering can not being able to water a herb.
-- 2025-12-04: A seed can no longer be used while you are preparing the soil for a seed.
-- 2025-12-01: Farms no longer flicker during updates (a flicker now happens only when a plant is removed or collected), sync from server to client improved, and a splash radius was added to `bucketItemId` and `wateringCanId`.
-- 2025-08-10: Added `weatherAffect` under `locationTempAffect` to turn off watering by rain.
-- 2025-08-04: Added `Config.PumpModel`. Fixed an issue with deleting a farm.
-- 2025-06-05: Fixed a herb being pickable twice.
-- 2025-05-13: Adjusted loading of work farms and their limits, optimized farm loading, changed how new farms are created, and fixed the farmer NPC not being removed when the whole farm is collected.
-
-*This page was built from the script's announcement, its changelog, and resolved support tickets. For anything not covered here, open a ticket in the GUM Scripts Discord.*

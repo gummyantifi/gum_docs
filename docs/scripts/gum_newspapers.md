@@ -16,13 +16,13 @@ GUM Newspapers lets players write, design, and publish newspapers in-game on Red
 ### Newspaper editor
 
 - Players write and format articles in an in-game editor.
-- Font size, style, and alignment can be changed.
+- Font size, bold, italic, underline, color, and alignment can be changed.
 - Lines, frames, and other visual elements can be inserted.
 - Content can be arranged freely on each page.
 
 ### Images and design
 
-- Images are added by URL, in multiple common image formats.
+- Images are added by pasting a direct link that ends in `.png`, `.jpg`, `.jpeg`, `.webp`, `.gif`, or `.svg`.
 - Images can be resized and positioned.
 - Decorative lines and frames can be added to build a layout.
 
@@ -34,33 +34,61 @@ GUM Newspapers lets players write, design, and publish newspapers in-game on Red
 
 ### Publishing and items
 
-- A finished newspaper is saved as an item and can be distributed to players.
-- Empty Newspaper items are printed and turned into finished newspapers.
-- Newspaper data is stored in item metadata, so every newspaper uses the same base item. You do not need a separate item for each newspaper.
+- A player with the right job uses an empty newspaper item to open the editor.
+- When the editor is closed with content in it, the script asks how many copies to print. The player needs that many empty newspaper items.
+- Each printed copy is the same finished newspaper item. The item's metadata holds the newspaper's ID, and the content is stored in the database under that ID. You do not need a separate item for each newspaper.
+- Any player can use a finished newspaper item to read it.
 - Suggested uses: newspapers, news agencies, player journalism, government announcements, businesses, events, advertisements, and community stories.
 
-### Templates and server styling
+## Requirements
 
-- You can customize backgrounds, fonts, text formatting, images, frames, decorative elements, and page layouts.
-- Custom frames, lines, and other elements can be configured for your server.
-- You can configure the available tools, newspaper settings, formatting options, and item behavior.
+- **gumApi**. Install it first and place it between your framework and the script in your resource order. See [Install gumApi](../start/gumapi.md).
+- **oxmysql**.
 
-## Before you install
+## Install
 
-Install **gumApi** first and place it between your framework and the script in your resource order. See [Install gumApi](../start/gumapi.md).
+1. Put the `gum_newspapers` folder in your resources and start it after `gumApi` and `oxmysql`.
+2. Add two items to your inventory items. The names must match `emptyId` and `fullId` in `Config.newsPapers`:
+   - `Empty_Newspapers`: the empty newspaper that opens the editor.
+   - `Newspapers`: the finished newspaper.
+3. You do not need to import any SQL. On start the script creates the `newspapers` table if it does not exist. It has two columns: `id` and `text` (the newspaper content).
 
-- Set two items: the empty newspaper item and the regular newspaper item. Since the 2026-08-17 rework, individual newspapers are not defined in the configuration file. When a player creates a newspaper, the script stores everything in the item's metadata and creates the newspaper item.
+## Configuration
 
-## Common problems and fixes
+Everything is in `config.lua`.
+
+### Publishers (`Config.newsPapers`)
+
+Each entry is one publisher. The key is the publisher's name.
+
+```lua
+Config.newsPapers = {
+    ["Valentine News"] = {
+        emptyId = "Empty_Newspapers",
+        fullId = "Newspapers",
+        jobs = {"UG", "B_News", "SD_News"},
+        removeEmptyId = true,
+    },
+}
+```
+
+- `emptyId`: the item that opens the editor.
+- `fullId`: the item given to the player when the newspaper is printed.
+- `jobs`: the jobs that can open the editor with the empty item. Replace the example job names with your own.
+- `removeEmptyId`: `true` takes one empty item for each printed copy.
+
+To give a second job group its own newspaper, add another entry with its own item names.
+
+### Lines and frames (`Config.Presets`)
+
+`Config.Presets.lines` and `Config.Presets.frames` list the images offered in the editor sidebar. The defaults point to three line images and three border images in `html/presets/`. To add your own, put a `.png` in that folder and add its path to the list.
+
+### Language (`Config.Language`)
+
+`Config.Language.prompts.howManyNewspapersYouWantCreate` holds the button label and the question shown when a player prints copies.
+
+## Customers also ran into these
 
 ### The server console shows a "d" argument error
 
-This was a server-side bug. It was fixed on 2026-09-05. Update the server files.
-
-## Recent changes
-
-- **2026-10-21:** Improved the UI functions in the editor (font size, bold, and so on). The `html` folder changed.
-- **2026-09-05:** Fixed the "d" argument error in the server console. Server files changed.
-- **2026-08-17:** Complete rework of the script. Newspapers are now created in the in-game editor and stored in item metadata, so the script no longer depends on the configuration file for newspaper content. You set the empty newspaper item and the regular newspaper item. Added image insertion and configurable frames, lines, and other elements.
-
-*This page was built from the script's announcement, its changelog, and resolved support tickets. For anything not covered here, open a ticket in the GUM Scripts Discord.*
+This was a server-side bug. It was fixed on 2026-09-05. Update `server.lua`.

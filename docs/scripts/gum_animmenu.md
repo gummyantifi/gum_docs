@@ -15,22 +15,22 @@ GUM Animmenu is an animation menu for RedM with over 250 animations, scenarios, 
 ### Animation library
 
 - Over 250 animations are included.
-- The library covers standard animations, scenarios, shared animations, prop animations, and walking styles.
+- The library covers standard animations, emotes, scenarios, shared animations, prop animations, and walking styles.
 - Animations are sorted into categories, and the search filter searches across all categories at once.
-- An animation preview is available. It works only for the "animNorm" functions.
+- Hovering an animation in the list plays a preview on a small preview character. The preview plays for `animNorm` and `emote` entries.
 
 ### Favorites and quick access
 
 - Players can add animations to their personal favorites.
 - Up to 32 favorite animations can appear in the center of the animation menu.
-- Players can assign custom chat commands to animations (for example `/a sit`, `/a lean1`, `/a lean2`).
-- The same system supports custom commands (for example `/reloadskin`).
+- Players can assign their own chat command to an animation (for example `/a sit`, `/a lean1`, `/a lean2`).
+- The same system runs other chat commands from the menu (for example a skin reload command).
 
 ### Adding your own content
 
 Through the configuration files you can add:
 
-- Custom animations and scenarios.
+- Custom animations, emotes, and scenarios.
 - Shared animations.
 - Prop animations and props attached to the player.
 - Walking styles.
@@ -51,107 +51,159 @@ Players look at a compatible object to get interaction options. Supported object
 
 - Chairs.
 - Benches (left and right side).
-- Beds.
+- Beds and bedrolls.
 - Bathtubs.
+- Pianos.
 
 The sitting system can be disabled.
 
 ### Extra activities
 
 - Spin revolvers.
-- Play with knives.
+- Play with knives at a table.
 - Play dice with friends.
 - The `gum_play` interactions are integrated into the animation menu.
 
-## Before you install
+## Requirements
 
-Install **gumApi** first and place it between your framework and the script in your resource order. See [Install gumApi](../start/gumapi.md).
+- **gumApi**. Install it first and place it between your framework and the script in your resource order. See [Install gumApi](../start/gumapi.md).
+- **oxmysql**. The script saves player commands and favorites through it.
 
-## Configuration notes
+## Install
 
-### Cancel command
+1. Put the `gum_animmenu` folder in your resources and start it after `gumApi` and `oxmysql`.
+2. You do not need to import any SQL. On start the script creates two tables if they do not exist: `animations` (each character's own animation commands) and `animationsfavorite` (each character's favorite slots).
+3. Add an item named `HeadBag` to your inventory items. Using it puts the sack on your own head or on the nearest player. The item name is fixed in the script.
 
-- `Config.CancelAnimationCommand`: the chat command that cancels the current animation. Setting it to nil disables it. Added 2024-12-18.
+## Configuration
+
+There are three files in the root folder: `config.lua`, `configSitting.lua`, and `keyBind.lua`.
+
+### Opening the menu (`config.lua`)
+
+| Key | Default | What it does |
+| --- | --- | --- |
+| `Config.AnimMenuKeyPress` | `true` | Open the menu with a key. |
+| `Config.AnimMenuKey` | `0x0F39B3D4` | The control hash for that key. |
+| `Config.NotHoldKeye` | `false` | `true` opens the menu on a single press. `false` requires holding the key. |
+| `Config.OpenMenuCommandEnable` | `false` | Open the menu with a chat command. |
+| `Config.OpenMenuCommand` | `"animmenu"` | The name of that command. |
+| `Config.Debug` | `true` | Prints debug lines. Set it to `false` on a live server. |
+
+### Commands (`config.lua`)
+
+| Key | Default | What it does |
+| --- | --- | --- |
+| `Config.AnimCallCommand` | `"a"` | The command players use to call their saved animations, for example `/a sit`. |
+| `Config.CancelAnimationCommand` | `"clear"` | Cancels the current animation. Set it to `nil` to disable the command. |
+| `Config.Commands.drawPerson` | `"drawPerson"` | Drag the nearest player along the ground. |
+| `Config.Commands.layOnGround` | `"layOnGround"` | Crawl on the ground. |
+| `Config.Commands.selfHostige` | `"selfHostige"` | Offer yourself as a hostage. |
+| `Config.Commands.personHostige` | `"personHostige"` | Take the nearest player hostage. You must hold a melee weapon. |
+| `Config.Language.gunPlayCMD` | `"gun"` | Starts the revolver spinning. |
+| `Config.Language.diceCMD` | `"dice"` | Rolls dice. |
+
+The key names `selfHostige` and `personHostige` are spelled this way in the script. Keep the spelling.
+
+### Key binds (`config.lua` and `keyBind.lua`)
+
+- `Config.AllowKeybind` (default `true`) turns on quick keys for favorites.
+- `Config.Keybind` maps a favorite slot number to a control hash. The default binds slots 1 to 8.
 
 ```lua
-Config.CancelAnimationCommand = "clear"--Nil is disabled
+Config.Keybind = {
+	[1] = 0x52D29063,
+	[2] = 0x1CE6D9EB,
+	-- ...
+}
 ```
 
-### Key binds
+- `keyBind.lua` (root folder, capital B) holds the `keyPressAnim()` function that reads `Config.Keybind`. Edit it to require a key combination such as `CTRL + 1`, or to add more binds. It already checks a second control before it runs a favorite.
 
-- `Config.Keybind`: lets you bind your own animation keys. Before this, binds were limited to `1, 2, 3, 4, 5...`. Added 2026-07-13.
-- `keybind.lua` (root folder): contains the function that handles custom key combinations. You can use it to create bindings such as `CTRL + 1`, other key combinations, or more binds than the default. Added 2026-07-13. Version 1.0.3 added a condition to this file that checks whether a specific control is pressed before a command runs.
+### Mini games and sitting (`config.lua`)
 
-### Sitting
+| Key | Default | What it does |
+| --- | --- | --- |
+| `Config.DisablePlayGames` | `false` | `true` disables the knife game, the weapon spinning, and the dice game. |
+| `Config.FlourishChance` | `10` | Chance of the rare knife game animation. |
+| `Config.knifePlayTables` | 3 table models | The table models where the knife game is offered. |
+| `Config.DisableSitting` | `false` | `true` disables the sitting menu. |
 
-- `configSitting`: a new configuration file added on 2026-07-08 with the integrated sitting menu.
+### Props (`Config.Prop` in `config.lua`)
 
-### Favorites
-
-- Commands with spaces are blocked when an animation is selected for favorites. Only text without spaces is allowed (since 2025-02-02).
-
-### Dragging language entries
-
-Added 2024-09-28:
+Each entry is a prop that players can attach to their character.
 
 ```lua
-    [17] = "testDrag", -- Command for dragging a player
-    [18] = "[W][A][S][D]",
-    [19] = "R. Hard [ESC]",
-    [20] = "R. Easy [ENTER]",
-    [21] = "Accept your hard drag?",
+[7] = {name="Bagpack 1", prop="p_ambpack01x", bone=41232, parameter={0.33, -0.12, -0.19, 0.00, -56.0, 0.00}, jobLock={}},
 ```
 
-On 2024-09-29, entries `[19]` and `[20]` changed to a name and key format:
+- `name`: the label in the menu.
+- `prop`: the model name.
+- `bone`: the bone the prop attaches to.
+- `parameter`: position x, y, z and rotation x, y, z.
+- `jobLock`: job names that can use the prop. Leave it empty for everyone.
+
+### Animations (`Config.Anim` in `config.lua`)
+
+Each entry has a `name`, an optional `category`, and an `itsAnimation` type. The type decides which other fields the entry needs.
+
+| `itsAnimation` | Extra fields |
+| --- | --- |
+| `"animNorm"` | `anim = {dict, name}`, `time`, `flag` |
+| `"animWithProp"` | `anim`, `time`, `flag`, `props = {model, bone, x, y, z, rx, ry, rz}` |
+| `"emote"` | `emote` (the emote name) |
+| `"scenario"` | `scenario`, `time` |
+| `"animShared"` | `animDict`, `animName`, `animDict2`, `animName2`, `delay1`, `delay2`, `time`, `flag`, `offset` |
+| `"walkingStyle"` | `walkAnim` |
+| `"command"` | `command` (a chat command to run, without the slash) |
+
+Entries without a `category` appear under the label in `Config.Language.uncategorized`. The default config ships a `Commands` category with entries such as `undress`, `dress`, `hat`, and `house_manage`. Those commands belong to other scripts, so remove the entries your server does not have.
+
+### Sitting (`configSitting.lua`)
+
+- `Config.InteractAnim` lists the poses offered for each object type: `Bath`, `Bed`, `Bedroll`, and `Sit`. A pose can be limited with `isCompatible = "male"` or `"female"`.
+- `Config.Props` lists the object models that can be used, in the groups `Pianos`, `Baths`, `OneBed`, `DoubleBeds`, `OneSit`, and `DoubleSit`. Each model has an offset (`x`, `y`, `z`), a heading (`h`), and a `type` that points to a group in `Config.InteractAnim`. Double models have two positions, one for each side.
+
+To support a new chair or bed model, add its model name to the matching group with an offset.
+
+### Language (`Config.Language` in `config.lua`)
+
+All menu text, prompts, and notifications are in `Config.Language`. The drag prompts are in `Config.Language.drawText`:
 
 ```lua
-    [19] = {"R. Hard [ESC]", 0x156F7119},
-    [20] = {"R. Easy [ENTER]", 0xC7B5340A},
+drawText = {"[W][A][S][D]", "R. Hard [BACKSPACE]", "Cancel [ENTER]"},
 ```
 
-### Playing an animation from another script
+## Playing an animation from another script
 
-An event for calling animations from separate scripts was added on 2025-03-30:
+Trigger this client event from your own script:
 
 ```lua
--- props={"p_group_gamble_bottlewine01x", "skel_l_hand", 0.07, -0.04, 0.08, 252.0, 0.0, 0.0}
+-- props is optional, for example:
+-- props = {"p_group_gamble_bottlewine01x", "skel_l_hand", 0.07, -0.04, 0.08, 252.0, 0.0, 0.0}
 TriggerEvent("gum_animmenu:playAnim", anim, dics, time, flag, props)
 ```
 
-## Common problems and fixes
+To cancel the current animation from another script, trigger the client event `gum_animmenu:cancel`.
+
+## Customers also ran into these
 
 ### The hostage animation stops unexpectedly
 
-The right mouse button cancels the hostage animation (added 2025-07-06). Pressing it while holding a hostage ends the animation.
+The aim control (right mouse button by default) cancels the hostage animation. Pressing it while holding a hostage ends the animation.
 
 ### A favorite command with a space in it is not accepted
 
-This is intended. Since 2025-02-02, commands chosen for favorites cannot contain spaces. Use a single word.
+This is intended. A command with a space is ignored when you save it. Use a single word. The command is also saved in lower case.
 
 ### A prop stays in the player's hand after the animation is canceled
 
-Fixed on 2024-12-18 (client folder).
+This was fixed in the client files on 2024-12-18. Update to that version or later.
 
 ### The script uses a lot of client resources
 
-Fixed on 2024-10-25. Replace all files with the updated version. The config file does not need to be updated for that release.
+This was fixed on 2024-10-25. Replace all files with the current version.
 
 ### I cannot find the updated files
 
 Updated files are delivered to the purchaser's keymaster account. Download the new version from there.
-
-## Recent changes
-
-- 2026-10-31: Version 1.0.3. Font family changed from "crock" to "koala" in `html/index.css`. Added a control-pressed check in `keyBind.lua`. Replace `html/index.css`, `keyBind.lua`, and `client/client.lua`.
-- 2026-07-13: Added custom animation key binds through `Config.Keybind` and a new `keybind.lua` file in the root folder (client and fxmanifest changed).
-- 2026-07-08: Full script update. Redesigned backgrounds for the Animations, Props, and Favorite Animations menus. Search now covers all animation categories. The Sitting Menu and `gum_play` are integrated into the animation menu. Improved dice game. Existing animations and content are unchanged. New `configSitting` file, new images, and some new `config.lua` data and language entries.
-- 2025-07-06: The hostage animation can be canceled with the right mouse button. Added an animation preview (only for the "animNorm" functions).
-- 2025-03-30: Added the `gum_animmenu:playAnim` event for calling animations from other scripts.
-- 2025-02-02: Commands with spaces are blocked when selected for favorites.
-- 2024-12-18: Added `Config.CancelAnimationCommand`. Fixed the prop not being removed from the hand when an animation is canceled.
-- 2024-12-16: Major update. Added hostage taking, crawling, and the sack over the head. Over 150 new animations, new categories, a rewritten translation, and reorganized folders. Replacing all files is recommended.
-- 2024-10-25: Faster animation loading, lower client resource use, better drag sync between clients, and a redesigned menu with the option to bind multiple animations. Replace all files except the config.
-- 2024-09-29: Drag language entries `[19]` and `[20]` changed to a name and key format. Skeleton attachment for dragging changed.
-- 2024-09-28: Added a more forceful drag along the ground, with new language entries `[17]` to `[21]`.
-
-*This page was built from the script's announcement, its changelog, and resolved support tickets. For anything not covered here, open a ticket in the GUM Scripts Discord.*

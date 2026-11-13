@@ -9,7 +9,8 @@ GUM Pets adds ownable pets to your RedM server: players buy them from pet shops,
 ## At a glance
 
 - Video: [GUM Pets, Updated](https://www.youtube.com/watch?v=cbx836pMOjk)
-- A reworked version of the script was released for beta testing on 2025-05-13. Most changelog entries since then are for that beta version.
+- A reworked version of the script was released for beta testing on 2025-05-13.
+- Resource name: `gum_pets`
 
 ## What it does
 
@@ -42,151 +43,184 @@ GUM Pets adds ownable pets to your RedM server: players buy them from pet shops,
 
 Install **gumApi** first and place it between your framework and the script in your resource order. See [Install gumApi](../start/gumapi.md).
 
-- gumApi is the only dependency the developer names for GUM Pets.
+- gumApi is the only dependency the developer names for GUM Pets. The script also runs its database queries through `oxmysql`, so `oxmysql` must be started too.
+- `fxmanifest.lua` does not declare either dependency, so the start order is up to you: start `oxmysql` and `gumApi` before `gum_pets`.
 - Your framework is selected in the gumApi config. Check that it is set correctly before starting GUM Pets.
-- For player-owned stores, the script creates the `pets_store` database table itself (see "Player-owned pet stores do not work" below).
 
-## Configuration notes
+## Install
 
-The beta release separated the configuration into several files. The changelog names these settings.
+1. Put the `gum_pets` folder in your resources and start it after `oxmysql` and `gumApi`.
+2. Do not import any SQL. The script creates its tables on start.
+3. Add the items listed below to your inventory.
+4. Edit the files in `cfg/`, then restart the resource.
 
-### Pet logic (`Config.PetsLogic` in `config.lua`)
+### Database tables
 
-- `ballItem`: the item used as the ball for fetch. Added 2025-06-03.
+The script creates these tables if they do not exist:
+
+| Table | Holds |
+| --- | --- |
+| `pets` | Owned pets |
+| `pets_store` | Pets listed in player-owned stores |
+| `pets_breeding` | Active breeding records |
+| `real_logic_pets` | The aging timer |
+
+### Items
+
+Item names are case sensitive. These are the defaults.
+
+| Item | Used for | Where it is set |
+| --- | --- | --- |
+| `Ball` | Fetch | `Config.PetsLogic.ballItem` |
+| `HorseTag` | Renaming a pet | `Config.PetsLogic.renameItem` |
+| `Hay` | Resetting a pet's age | `Config.PetsLogic.ageingSetup.resetItem` |
+| `BreederFix` | Fertility item for breeding | `Config.PetsStoreLogic.mating.giveMatingToMale` and `giveMatingToFemale` |
+| `Health_For_Dog`, `Heal_Granuls` | Healing and reviving | `healItems` of each pet in `cfg/configPets.lua` |
+| `Meat`, `Pork_Meat`, `Gamey_Meat`, `Granuls`, `Bison_Meat` | Food (Husky example) | `eatSettings.setupItems` of each pet |
+| `Clean_Water_Bottle` | Water | `drinkSettings.setupItems` of each pet |
+
+The ball, rename, age reset, and heal items are registered as usable items. Food and water items differ per pet, so check `setupItems` for every pet you sell.
+
+## Configuration
+
+All config files are in `cfg/`.
+
+| File | What it holds |
+| --- | --- |
+| `config.lua` | `Config.DebugAndBaseOption`, `Config.PetsStoreLogic`, `Config.PetsLogic`, `Config.canHoldAnimals`, `Config.canHuntAnimals` |
+| `configCoords.lua` | `Config.Shops` (pet shops) and `Config.PlayerStore` (player-owned stores) |
+| `configJobs.lua` | `Config.Jobs` |
+| `configPets.lua` | `Config.iconSkills` and `Config.PetsConfig` (one entry per pet model) |
+| `configPetsStore.lua` | `Config.Descriptions` and `Config.PetsStore` (what the shops sell) |
+| `configLang.lua` | `Config.Language` |
+| `configSrv.lua` | Server only: Discord webhook |
+
+### Base options (`Config.DebugAndBaseOption` in `cfg/config.lua`)
+
+- `debug`: prints debug lines to the console. It is `true` in the default file. Set it to `false` on a live server.
+- `defaultUnemployedJob`: the job name used as the default entry in `Config.Jobs`. Default `"unemployed"`.
+
+### Shop logic (`Config.PetsStoreLogic` in `cfg/config.lua`)
+
+- `callFromStore`, `sellOldForMoney`, `saveCallPet` (a called pet is called again after a relog).
+- `healPrice`: `calculate` and `price`.
+- `whereTheyAreKept`: `enabled = true` keeps each pet at the shop where it is stored. `transferPrice = 100` is the cost to move it to another shop.
+- `mating`: `priceForPay = 100`, `time = 5760`, `chanceAfterBuy`, `chanceAfterMating`, the two fertility items (`nil` disables them), and `txAdminMatingCalculator` with `txAdminDisabledTimer`.
+- `storePetAge`: age range of shop pets, `smallPets = {1, 5}` and `normalPets = {6, 10}`.
+
+### Pet logic (`Config.PetsLogic` in `cfg/config.lua`)
+
+- `ballItem`: the item used as the ball for fetch.
 
 ```lua
     ballItem = "Ball",
 ```
 
-- `whistleKey`: the key used to whistle. Added 2026-02-28.
+- `renameItem`: the item that renames the called pet.
+- `cooldownForWhistle`: seconds between whistles.
+- `whistleKey`: the key used to whistle.
 
 ```lua
     whistleKey = 0x80F28E95, -- L key
 ```
 
-### Per-pet settings (`configPets`)
+- `ageingSetup`: `ageUpdateTime`, `ageUpdate`, `maxAge = 20`, `deadOnOldTimer` (`0` disables death from old age), `deadOnOldChance`, `resetItem`, `resetAgeTo`.
+- `statusSetup.metabolism`: `enabled`, `updateTime`, `healthDown`, hunger and thirst drain per movement state, and `gainWhileFeed`.
+- `experienceSystem`: `petLevels` (XP needed per level) and `experienceGain`.
+- `bondingSystem`: `enabled`, `chanceGainLevel` (first value for players, second for trainers), and the "bad situation" settings.
 
-- `canFetchBall`: set on every pet, controls whether that pet can fetch the ball. Added 2025-06-03.
+### Pet shops (`Config.Shops` in `cfg/configCoords.lua`)
+
+Each numbered shop has a `locationName`, `blipSetting` (`blipEnabled`, `blipName`, `blipSprite`), `cameraSetting`, `spawnSetting` (`bigPet`, `smallPet`), and `npcSetting` (`enabled`, `model`, `coords`, `interaction`, `useTime`, `timeOpen`, `timeClose`). Do not remove the empty `[0]` entry.
+
+`Config.PlayerStore` defines player-owned stores, each with `npcSetting`, `blipSetting`, and `baseSettings` (`maxPets`, `storeCoords`, `petCoords`).
+
+### What the shops sell (`Config.PetsStore` in `cfg/configPetsStore.lua`)
+
+Pets are grouped by category, then by color name. Each entry has:
+
+- `enabled`: `false` removes the pet from the shops.
+- `model`, `skinColor`
+- `storePos`: the shop numbers from `Config.Shops` that sell it. `0` means all shops.
+- `dollarPrice`, `goldPrice`, `sellPrice`
+- `jobForBuy`: jobs that can buy it. A list that contains `"unemployed"` lets everyone buy.
+- `groupForBuy`: groups that can buy it. `{"none"}` disables the group check.
+
+The three Husky entries in the default file use `jobForBuy = {"Testjob"}`. Change that before you go live.
+
+### Per-pet settings (`Config.PetsConfig` in `cfg/configPets.lua`)
+
+One entry per pet model:
+
+- `canFetchBall`: whether the pet can fetch the ball.
 
 ```lua
-    canFetchBall = false,
+        canFetchBall = true, -- If pet can fetch ball
 ```
 
-- `storeAnimation`: on 2025-06-04 the ability to adjust the Z-axis of the shoulder animation position was added, with this example. The shoulder animation is also taken from `storeAnimation`.
+- `canTakeToHand`, `canPutOnShoulder`: a pet uses one or the other.
+- `canHuntAnimals`, `canFindDeadAnimals`, `behaviorWild`, `canCallToMe`
+- `storeAnimation`: the idle animation in the shop. It is also used for the shoulder position, and an optional third value adjusts the height on the shoulder:
 
 ```lua
 storeAnimation = {"creatures_bird@owl@normal@idle", "idle", 0.1}
 ```
 
-- Heal items: added to `ConfigPets.lua` (and to `ConfigLangs.lua`) on 2025-05-22. Since 2026-04-06 the script correctly tells apart the `healItem` of each individual pet.
-- `enabled`: a pet can be set to `enabled = false`.
-- `whereTheyKept`: the option for where pets are kept. A bug that always stored purchased pets in the first shop slot while this was enabled was fixed on 2025-05-22.
+- `canBreedWith`: the models this pet can breed with.
+- `eatSettings` and `drinkSettings`: animations and `setupItems`, in the form `["Label"] = {"Item_Id", count, {hunger, thirst}}`.
+- `healItems`: `["Label"] = {"Item_Id", revive, healAmount}`. The second value sets whether the item also revives a dead pet. A heal item only works on pets that list it.
+- `skillList`: each skill has `skillName`, `skillIcon`, `unlockAtLevel`, `learnChance`, and its animations.
 
-### Jobs and shop access
+### Jobs (`Config.Jobs` in `cfg/configJobs.lua`)
 
-- `Config.Jobs`: per-job settings. The keys seen in a customer config are `canTrain`, `canTrainSkill`, `canBreed`, `canHeal`, `canBuyCubs`, `expBoost`, `maxPets`, and `maxBreeds`. The default entry is keyed by `Config.DebugAndBaseOption.defaultUnemployedJob`.
-- `canHeal`: if the healing injection does not work, check this value in the job settings.
-- `jobForBuy`: set in the store configuration to restrict buying to listed jobs.
+One entry per job with `canTrain`, `canTrainSkill`, `canBreed`, `canHeal`, `canBuyCubs`, `expBoost`, `maxPets`, and `maxBreeds`. The entry keyed by `Config.DebugAndBaseOption.defaultUnemployedJob` is the default for everyone else.
 
-### Discord hook
+### Discord log (`cfg/configSrv.lua`)
 
-- Discord hook support was added on 2026-08-18. The changed files were `fxmanifest` and `configSrv`.
+`ConfigSrv.discordHook` is `true` in the default file and `ConfigSrv.webhookLink` is empty. Put your webhook in `webhookLink`, or set `discordHook = false`. `ConfigSrv.webhookLanguage` holds the log texts.
 
 ### Language lines added by updates
 
-If you keep your own language file, add these lines when you update.
-
-Added 2025-06-03 (`configLang`):
+If you keep your own `cfg/configLang.lua` when you update, make sure it has these keys:
 
 ```lua
     notifyYouNeedHaveCalledPet = {"You need to have called pet", 2000},
     notifyAfterNextCallPet = {"After next call your pet will be renamed", 2000},
     notifyBallIsLossed = {"Your ball is lossed, you need to buy new one", 2000},
     notifyYourPetCantFetchBall = {"Your pet can't fetch ball", 2000},
-```
-
-Added 2025-06-22:
-
-```lua
-doYouWantTransferPetToPlayer = {"Player ID", "Accept"},
-promptPetTransfer = {"Transfer", 0x018C47CF},
-```
-
-Added 2025-08-15:
-
-```lua
+    notifyThisItemCantHealYourPet = {"This item can't heal this pet", 2000},
+    doYouWantTransferPetToPlayer = {"Player ID", "Accept"},
+    promptPetTransfer = {"Transfer", 0x018C47CF},
     inputPetsPrice = {"Accept", "Price"},
     inputPetsDesc = {"Accept", "Description"},
 ```
 
-Added 2026-04-06:
+The same applies to config keys added by updates: `ballItem` and `whistleKey` in `Config.PetsLogic`, and `canFetchBall` and `healItems` on each pet.
 
-```lua
-notifyThisItemCantHealYourPet = {"This item can't heal this pet", 2000},
-```
+## Commands
 
-## Common problems and fixes
+| Command | What it does |
+| --- | --- |
+| `/loadPets` | Reloads the player's pets from the server |
+
+## Customers also ran into these
 
 ### The pet shop blip shows but I cannot interact, and the console shows "attempt to index a nil value"
 
-Cause: gumApi is missing or did not start.
-
-Fix: install gumApi and make sure it loads before GUM Pets. Check the server console to see whether gumApi reports a problem on launch.
+gumApi is missing or did not start. Install gumApi and make sure it starts before GUM Pets. Check the server console to see whether gumApi reports a problem on launch.
 
 ### The healing injection does not work
 
-Check `canHeal` in the job settings for the player's job.
+Check `canHeal` in `cfg/configJobs.lua` for the player's job. Players without it get the "You don't have permissions to do this" notification.
 
 ### Player-owned pet stores do not work
 
-Cause: the old `pets_store` table does not work with the current version.
-
-Fix: update to the 2025-08-15 version or later, delete the `pets_store` table in the database, and let the script create a new one.
-
-### The heal item is registered as a usable item once for every pet
-
-Fixed on 2026-04-06. Pet revival items are now registered only once, and the correct `healItem` is distinguished for each pet. Update the client and server files.
+An old `pets_store` table does not match the current version, which stores `price`, `desc`, and `isBuyed` per listing. Update the script, delete the `pets_store` table in the database, and restart so the script creates a new one.
 
 ### `jobForBuy` does not restrict who can use the shop
 
-The `jobForBuy` function was fixed on 2025-06-22, and a job check that let a pet into the shop when it should not have was fixed on 2026-04-06. Update to the current version.
-
-### Feeding a pet needs more items than configured
-
-Example: 1 item was required but the player needed 2 in the inventory. Fixed on 2025-06-06 (server).
-
-### A pet dies from bleeding after being treated
-
-Fixed on 2024-12-05 (`client.lua`).
-
-### A pet stays dead after being revived
-
-Fixed on 2024-11-30, with further revival fixes on 2025-08-15 and 2026-04-06.
+Check the list. If `jobForBuy` contains `"unemployed"`, every player can buy that pet. List only the jobs that should have access. Older versions also had a bug in this check, so update to the current version.
 
 ### Shop blips or shop NPCs do not show up
 
-Shop blips were fixed on 2025-06-07. NPCs not being displayed was fixed on 2025-08-15.
-
-### Players get an error when the first and only pet in a category is set to `enabled = false`
-
-Fixed on 2026-08-16 (client).
-
-## Recent changes
-
-- 2026-09-07: Fixed saving a bred pet while the Discord hook is enabled (server).
-- 2026-08-18: Added Discord hook support (`fxmanifest`, `configSrv`).
-- 2026-08-16: Fixed the error shown when the first and only pet in a category is set to `enabled = false`.
-- 2026-08-07: Fixed an issue when putting a pet into a player store.
-- 2026-06-24: Fixed the "-" value shown for products when the minigame is disabled.
-- 2026-04-06 (beta): Each pet's `healItem` is now distinguished correctly, revival items are registered only once, reviving no longer causes an error, and the shop job check was fixed. New language line `notifyThisItemCantHealYourPet`.
-- 2026-02-28 (beta): Added `whistleKey` to `Config.PetsLogic`.
-- 2025-09-30: Slightly reduced the size values for small pets.
-- 2025-09-14: Fixed a job and group checking problem introduced by the previous update.
-- 2025-09-11 (beta): The filter by group function now works.
-- 2025-08-15 (beta): Fixed NPCs not displaying, breeding asking for fertility injections when both pets were already set to yes, pets duplicating on relog, and placing pets into a player-owned store. Delete the `pets_store` table so the script can recreate it. New language lines `inputPetsPrice` and `inputPetsDesc`.
-- 2025-06-22 (beta): Added pet trading between players (aim at and target the pet). Fixed `jobForBuy`. New language lines `doYouWantTransferPetToPlayer` and `promptPetTransfer`.
-- 2025-06-07 (beta): Fixed items not being removed for breeding repair, pet ball duplication, and missing shop blips.
-- 2025-06-04 (beta): Added Z-axis adjustment for the shoulder animation through `storeAnimation`.
-- 2025-06-03 (beta): Pets can fetch a ball. Hold the right mouse button and click the left button to throw (hold longer for a stronger throw). New settings `ballItem` and `canFetchBall`, four new language lines, and a fix for pet renaming.
-
-*This page was built from the script's announcement, its changelog, and resolved support tickets. For anything not covered here, open a ticket in the GUM Scripts Discord.*
+Check `blipSetting.blipEnabled` and `npcSetting.enabled` for the shop in `cfg/configCoords.lua`. Older versions had bugs here, so update to the current version.
