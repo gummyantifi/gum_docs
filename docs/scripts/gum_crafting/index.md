@@ -10,7 +10,7 @@ Create complex crafting stations, professions, hidden recipes, item requirements
 
 ---
 
-## 🛠️ Dynamic Crafting System
+## Dynamic Crafting System
 
 Create unlimited crafting books and recipes with an easy-to-use configuration system.
 
@@ -26,7 +26,7 @@ Whether you need a simple crafting table or a complex production system, everyth
 
 ---
 
-## 📦 Multiple Crafting Locations
+## Multiple Crafting Locations
 
 A single crafting book can contain multiple crafting locations.
 
@@ -41,7 +41,7 @@ Players can access the same crafting system from multiple places.
 
 ---
 
-## 👨‍🔧 Profession Based Crafting
+## Profession Based Crafting
 
 Connect crafting with professions and progression.
 
@@ -54,7 +54,7 @@ Players gain profession experience by crafting, creating a natural progression s
 
 ---
 
-## 🔍 Discovery System
+## Discovery System
 
 Create hidden recipes that players must discover themselves.
 
@@ -73,7 +73,7 @@ Perfect for:
 
 ---
 
-## 📋 Advanced Recipe System
+## Advanced Recipe System
 
 Each recipe supports:
 
@@ -91,7 +91,7 @@ Create simple items or complex production chains.
 
 ---
 
-## 🎒 Metadata Support
+## Metadata Support
 
 Crafted items can contain custom metadata.
 
@@ -105,7 +105,7 @@ This allows unique crafted items with different properties.
 
 ---
 
-## 🔄 Return Materials System
+## Return Materials System
 
 Recipes can return items after crafting.
 
@@ -117,7 +117,7 @@ Useful for:
 
 ---
 
-## 🪵 Crafting Props
+## Crafting Props
 
 Add physical objects required during crafting.
 
@@ -131,7 +131,7 @@ Make crafting feel more interactive and immersive.
 
 ---
 
-## 🔒 Access Control
+## Access Control
 
 Control who can use each crafting system.
 
@@ -145,7 +145,7 @@ Create public workshops or restricted production areas.
 
 ---
 
-## ⚙️ Fully Configurable
+## Fully Configurable
 
 Almost every part of the crafting system can be customized.
 
@@ -159,3 +159,58 @@ Configure:
 - Production systems
 
 Build anything from a simple crafting table to a complete economy-based production system.
+
+---
+
+## Requirements
+
+- `gumApi`, started before `gum_craft`. The script takes players, jobs, inventory, usable items, notifications, prompts and the item image folder from it.
+- `oxmysql`. The script calls it for its two database tables.
+
+The resource folder is `gum_craft`. CraftingHelper (folder `craftingHelper`) is a separate, optional resource for building recipes in game. It also needs `gumApi`.
+
+## Installation
+
+1. Put `gum_craft` in your resources folder and start it after `gumApi` and `oxmysql`.
+2. Do not import any SQL. On start the script creates the tables `craft` (profession experience per character) and `craft_data` (discovered recipes per character) if they do not exist.
+3. Make sure every item named in your recipes exists in your inventory: book items, ingredients, crafted items, returned items and blueprint items.
+4. Edit `config.lua` and `configRecipes.lua`, then restart `gum_craft`.
+
+## Configuration files
+
+### `config.lua`
+
+- `Config.CraftingCommand`: the chat command that opens the crafting menu. Default is `"vyroba"`.
+- `Config.Language`: all texts, in three groups: `notifications`, `prompts` and `menu`. The shipped texts are Czech. `prompts.promptCraftButton` holds the prompt label and the key hash used at crafting coordinates.
+- `Config.Profession`: one entry per profession. Each entry lists the experience needed for level 1, 2, 3 and so on.
+- `Config.ProfessionDesc`: the description shown for each profession in the menu. It accepts HTML. Use the same profession names as in `Config.Profession`.
+
+A recipe that requires a profession must use a name that exists in `Config.Profession`. With an unknown name the player's level counts as 0.
+
+### `configRecipes.lua`
+
+This file holds one table, `Config.Items`, with all crafting books and their recipes. You can write it by hand or generate it:
+
+- [Config with the helper](configHelper.md)
+- [Config without the helper](configWithoutHelper.md)
+- [Converting an old config](configOldConverting.md)
+
+## How players open crafting
+
+Each book in `Config.Items` opens in one of three ways:
+
+- By command: books with `["command"] = true` are merged into one menu, opened with `/vyroba` (or your `Config.CraftingCommand`). The player sees the books whose `["job"]` list is empty or includes their job.
+- By coordinates: books with entries in `["coords"]` show a prompt when the player stands within 1 meter of a point.
+- By item: a book with `["command"] = false` and no coordinates is registered as a usable item. The item name is the book key.
+
+## In the menu
+
+- Recipes are colored: green when the player can craft, red when materials are missing, orange when the recipe is locked and can be self-discovered, gray when it is locked without self discovery (blueprint only).
+- Crafting jobs are queued, up to 7 at a time. Clicking a queue entry cancels it.
+- Players can pin up to 5 recipes and mark favorites.
+- If a recipe has props, the player must stay within 2 meters of the prop. Walking away clears the queue. The same happens when the player walks more than 1 meter away from a crafting coordinate.
+- Using a blueprint item teaches the recipe and removes one blueprint.
+
+## Troubleshooting
+
+Known problems and their fixes are on the [troubleshooting page](troubleshooting.md).
