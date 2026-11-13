@@ -1,25 +1,11 @@
 $schema: https://api.gitbook.com/gitbook-docs.yaml
 site:
-  title: GUM scripts Docs
+  title: Gum Scripts Docs
   structure:
     - type: space
       key: space-1
-      title: Documentation
-      path: documentation
+      title: Docs
+      path: docs
       default: true
       content:
-        directory: ./documentation
-    - type: space
-      key: space-2
-      title: Imported content
-      path: imported-content
-      draft: true
-      content:
-        directory: ./imported-content
-    - type: space
-      key: space-3
-      title: Imported content
-      path: imported-content-1
-      draft: true
-      content:
-        directory: ./imported-content-1
+        directory: ./docs
