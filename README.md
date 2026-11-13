@@ -10,7 +10,7 @@ Installation, configuration, and troubleshooting for GUM Scripts (RedM). The pag
 
 ## Put it on GitBook
 
-`.gitbook.yaml` tells GitBook the pages are in `docs/`, the home page is `docs/index.md`, and the sidebar is `docs/SUMMARY.md`.
+`gitbook-docs.yaml` (written by GitBook) points the site at `docs/`. The home page is `docs/README.md` and the sidebar is `docs/SUMMARY.md`.
 
 1. In GitBook, open the space, then **Configure**, then **GitHub Sync**.
 2. Connect the GitHub account that owns this repo and pick this repo and the `main` branch.
